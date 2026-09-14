@@ -127,6 +127,7 @@ body{
   background:linear-gradient(135deg, rgba(114,153,123,.92), rgba(141,183,149,.82));
   box-shadow:0 4px 14px rgba(114,153,123,.35), inset 0 1px 1px rgba(255,255,255,.4); }
 .tabbar .tn{ font-size:10.5px; font-weight:800; opacity:.75; }
+.tabbar .tmini{ display:none; }   /* 手机端的缩写标签，桌面隐藏 */
 
 /* ══ 视图切换 ══ */
 .view{ display:none; flex-direction:column; gap:18px; }
@@ -335,58 +336,7 @@ footer{ text-align:center; font-size:11.5px; color:rgba(28,38,33,.45);
 .pk-copy:hover,.pk-cancel:hover{ transform:translateY(-1px); }
 @media (prefers-reduced-motion: reduce){ .picker{ animation:none; } }
 
-/* ═══ 卡片操作区 + 导航按钮 ═══ */
-.card-act{ display:flex; justify-content:flex-end; gap:7px; margin-top:2px; position:relative; z-index:5; }
-.nav-btn{ display:inline-flex; align-items:center; gap:4px; flex:0 0 auto;
-  font:inherit; font-size:11.5px; font-weight:700; padding:5px 12px; border-radius:999px;
-  cursor:pointer; color:#fff; border:1px solid rgba(255,255,255,0.5);
-  background:linear-gradient(135deg, rgba(114,153,123,0.92), rgba(141,183,149,0.82));
-  box-shadow:0 3px 10px rgba(114,153,123,0.28), inset 0 1px 1px rgba(255,255,255,0.4);
-  transition:transform .18s, box-shadow .18s; }
-.nav-btn:hover{ transform:translateY(-1px); box-shadow:0 6px 16px rgba(114,153,123,0.38), inset 0 1px 1px rgba(255,255,255,0.45); }
-.nav-btn:active{ transform:translateY(0); }
 
-/* ═══ 筛选条 ═══ */
-.filter-bar{ display:flex; gap:7px; overflow-x:auto; padding:3px 2px 9px; margin-bottom:4px;
-  position:relative; z-index:5; }
-.filter-bar::-webkit-scrollbar{ height:0; }
-.filter-bar button{ flex:0 0 auto; font:inherit; font-size:12px; font-weight:700;
-  padding:6px 14px; border-radius:999px; cursor:pointer; color:var(--ink-soft);
-  background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.5);
-  box-shadow:inset 0 1px 2px rgba(255,255,255,0.7); transition:all .18s; }
-.filter-bar button:hover{ color:var(--ink); background:rgba(255,255,255,0.42); }
-.filter-bar button.on{ color:#fff; border-color:rgba(255,255,255,0.5);
-  background:linear-gradient(135deg, rgba(114,153,123,0.92), rgba(141,183,149,0.82));
-  box-shadow:0 3px 10px rgba(114,153,123,0.3), inset 0 1px 1px rgba(255,255,255,0.4); }
-.fgroup[hidden]{ display:none; }
-
-/* ═══ 地图选择器（底部抽屉） ═══ */
-.picker-mask{ position:fixed; inset:0; z-index:60; background:rgba(28,38,33,0.42);
-  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
-  display:none; align-items:flex-end; justify-content:center; }
-.picker-mask.show{ display:flex; }
-.picker{ width:100%; max-width:520px; margin:0 auto;
-  background:linear-gradient(160deg, rgba(255,255,255,0.94), rgba(244,248,244,0.9));
-  backdrop-filter:blur(26px) saturate(200%); -webkit-backdrop-filter:blur(26px) saturate(200%);
-  border:1px solid rgba(255,255,255,0.75); border-bottom:0;
-  border-radius:26px 26px 0 0; padding:18px 18px calc(16px + env(safe-area-inset-bottom));
-  box-shadow:0 -8px 40px rgba(60,55,70,0.25); animation:pkUp .22s ease-out; }
-@keyframes pkUp{ from{ transform:translateY(100%); } to{ transform:none; } }
-.pk-title{ font-size:15px; font-weight:800; text-align:center; }
-.pk-dest{ font-size:12px; color:var(--ink-soft); text-align:center; margin:7px 0 15px; line-height:1.5; }
-.pk-btn{ display:flex; flex-direction:column; gap:1px; text-decoration:none; color:var(--ink);
-  background:rgba(255,255,255,0.62); border:1px solid rgba(255,255,255,0.85);
-  border-radius:16px; padding:12px 15px; margin-bottom:9px; font-size:14.5px; font-weight:700;
-  box-shadow:0 3px 10px rgba(60,55,70,0.07); transition:all .18s; }
-.pk-btn:hover{ background:rgba(255,255,255,0.9); transform:translateY(-1px); }
-.pk-btn small{ font-size:11px; color:var(--ink-soft); font-weight:600; }
-.pk-copy,.pk-cancel{ width:100%; font:inherit; font-size:13.5px; font-weight:700;
-  border-radius:999px; padding:11px; margin-top:4px; cursor:pointer;
-  transition:transform .18s, background .18s; }
-.pk-copy{ border:1px solid rgba(114,153,123,0.42); background:rgba(206,231,199,0.42); color:#3f5c46; }
-.pk-cancel{ border:1px solid rgba(255,255,255,0.65); background:rgba(255,255,255,0.45); color:var(--ink-soft); }
-.pk-copy:hover,.pk-cancel:hover{ transform:translateY(-1px); }
-@media (prefers-reduced-motion: reduce){ .picker{ animation:none; } }
 
 /* ═══ 距离排序 ═══ */
 .sort-bar{ display:flex; align-items:center; gap:9px; flex-wrap:wrap;
@@ -468,6 +418,65 @@ footer{ text-align:center; font-size:11.5px; color:rgba(28,38,33,.45);
   border-radius:50%; background:var(--brand-2); }
 .d-tip{ font-size:11.5px; line-height:1.7; padding:9px 12px 11px; color:#8a4a2c;
   border-top:1px dashed rgba(114,153,123,0.25); font-weight:600; }
+
+/* __FEATURE_CSS__ */
+/* ═══════════════════════════════════════════════════════════
+   移动端适配加固
+   ═══════════════════════════════════════════════════════════
+   ① 网格轨道防撑爆（最重要）
+      `grid-template-columns:1fr` 实为 `minmax(auto,1fr)`，其 auto 下限 =
+      条目 min-content 宽度。卡片内 `.d-inline` 是 white-space:nowrap 的长
+      文本，min-content 约 352px，会把整条轨道顶爆到 454px（容器只有 296px）。
+      外层 `.glass{overflow:hidden}` 一裁 → 卡片右侧内容（如「人均 ¥25」的
+      值）被裁掉且不可见、不可滚。改用 minmax(0,1fr) + 子项 min-width:0。
+   ② tab 栏手机端 4 等分，不再横向滚动、不再切掉第 4 个
+   ③ 筛选栏手机端换行成 4 列网格，8 个按钮全部可见
+   注意：本块必须在整个 <style> 的最末，否则会被后面的同名规则覆盖。
+   ═══════════════════════════════════════════════════════════ */
+
+/* ① 网格 / flex 最小宽度 */
+.cgrid.cg2{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+.cgrid.cg3{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+@media (max-width:820px){ .cgrid.cg3{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:600px){ .cgrid.cg2,.cgrid.cg3{ grid-template-columns:minmax(0,1fr); } }
+.cgrid>*{ min-width:0; }
+.card{ min-width:0; }
+.card>*{ min-width:0; }
+.card .ch>*{ min-width:0; }
+.card summary>*{ min-width:0; }
+.kv .kk,.kv .vv{ min-width:0; }
+.kv .vv{ overflow-wrap:anywhere; }
+.wcard,.day,.chain-i,.slot,.sub-hd{ min-width:0; }
+.hero h1,.sec-hd h2,.cdesc,.sh-intro,.sh-tip{ overflow-wrap:anywhere; }
+
+/* ④ 标签内长文本不再撑破（原 white-space:nowrap 会让超长标签直接冲出卡片） */
+.tag{ max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+
+/* ⑤ 行程串联链：`.cr` 原为 flex:0 0 auto 不可收缩，
+     「深圳光明城站 → 泉州站 → 西街」在窄屏会冲出视口（实测 right 321 > 305） */
+.chain-i .cr{ flex:0 1 auto; min-width:0; overflow-wrap:anywhere; }
+
+@media (max-width:640px){
+  /* ② tab 栏：4 等分，四项全可见 */
+  .tabbar{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px;
+           overflow:visible; padding:4px; top:8px; }
+  .tabbar button{ flex:none; min-width:0; width:100%; padding:8px 3px; font-size:12px;
+                  gap:3px; white-space:nowrap; }
+  .tabbar .tl{ display:none; }
+  .tabbar .tmini{ display:inline; }
+  .tabbar .tn{ font-size:10px; }
+
+  /* ⑥ 推荐菜预览：窄屏会被「推荐菜 N 道 ▼」挤到只剩 75px（约 5 字），
+     改为独占一行，拿到整行宽度 */
+  .dish > summary{ flex-wrap:wrap; row-gap:4px; }
+  .dish > summary .d-inline{ order:9; flex:1 0 100%; min-width:0; }
+
+  /* ③ 筛选栏：换行成 4 列网格，全部可见 */
+  .filter-bar{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px;
+               overflow:visible; padding:2px 2px 8px; }
+  .filter-bar button{ width:100%; min-width:0; padding:7px 2px; font-size:11.5px;
+                      white-space:nowrap; }
+}
 </style>
 </head>
 <body data-datum="gcj02">
@@ -497,10 +506,10 @@ footer{ text-align:center; font-size:11.5px; color:rgba(28,38,33,.45);
   </header>
 
   <nav class="glass tabbar" id="tabbar">
-    <button class="on" data-v="overview"><span class="tn">1</span>总览</button>
-    <button data-v="transport"><span class="tn">2</span>交通 · 详细规划</button>
-    <button data-v="spots"><span class="tn">3</span>景点介绍</button>
-    <button data-v="food"><span class="tn">4</span>美食打卡点</button>
+    <button class="on" data-v="overview"><span class="tn">1</span><span class="tl">总览</span><span class="tmini">总览</span></button>
+    <button data-v="transport"><span class="tn">2</span><span class="tl">交通 · 详细规划</span><span class="tmini">交通</span></button>
+    <button data-v="spots"><span class="tn">3</span><span class="tl">景点介绍</span><span class="tmini">景点</span></button>
+    <button data-v="food"><span class="tn">4</span><span class="tl">美食打卡点</span><span class="tmini">美食</span></button>
   </nav>
 
   <section class="view on" id="v-overview">
