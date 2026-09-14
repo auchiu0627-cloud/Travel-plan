@@ -87,6 +87,7 @@ main{padding:14px 14px 120px;padding-bottom:max(120px,env(safe-area-inset-bottom
 .item .time{font-size:12px;color:var(--brand);font-weight:700;margin-bottom:2px}
 .item .title{font-size:14px;font-weight:600}
 .item .desc{font-size:13px;color:var(--muted);margin-top:2px}
+.item .addr{font-size:12px;color:var(--muted);margin-top:3px}
 
 .sight-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .sight{
@@ -99,19 +100,6 @@ main{padding:14px 14px 120px;padding-bottom:max(120px,env(safe-area-inset-bottom
 .sight.nice{background:#f8f6f3;border-left:4px solid var(--blue)}
 .sight.extra{background:#fff8f0;border-left:4px solid var(--brand2)}
 .sight.skip{background:#fff2f4;border-left:4px solid var(--rose)}
-
-.map-wrap{
-  height:360px;border-radius:16px;overflow:hidden;position:relative;background:#e8e4de;margin-bottom:14px
-}
-#map{height:100%;width:100%}
-.map-bar{
-  position:absolute;bottom:10px;left:10px;right:10px;background:rgba(0,0,0,.72);color:#fff;
-  border-radius:10px;padding:8px 12px;font-size:12px;pointer-events:none;z-index:5
-}
-.loc-btn{
-  position:absolute;right:12px;top:12px;z-index:5;background:#fff;border:0;border-radius:50%;
-  width:38px;height:38px;box-shadow:0 2px 8px rgba(0,0,0,.15);display:flex;align-items:center;justify-content:center;font-size:18px
-}
 
 .filter-bar{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;margin-bottom:12px}
 .filter-bar button{
@@ -140,10 +128,28 @@ main{padding:14px 14px 120px;padding-bottom:max(120px,env(safe-area-inset-bottom
   flex-shrink:0;align-self:center;display:flex;align-items:center;gap:4px;
   background:var(--green);color:#fff;border:0;border-radius:10px;padding:8px 10px;font-size:12px;font-weight:600
 }
-.food .nav:disabled{background:var(--line);color:var(--muted)}
 
 .empty{text-align:center;padding:40px 20px;color:var(--muted);font-size:14px}
 footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
+
+/* ---- 选地图 App 弹出条 ---- */
+.picker-mask{position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:60;display:none;align-items:flex-end}
+.picker-mask.show{display:flex}
+.picker{background:var(--paper);width:100%;border-top-left-radius:18px;border-top-right-radius:18px;
+  padding:16px 16px calc(14px + env(safe-area-inset-bottom));box-shadow:0 -6px 24px rgba(0,0,0,.18);
+  animation:up .18s ease-out}
+@keyframes up{from{transform:translateY(16px);opacity:.6}to{transform:translateY(0);opacity:1}}
+.pk-title{font-size:15px;font-weight:700;text-align:center}
+.pk-dest{font-size:12px;color:var(--muted);text-align:center;margin:6px 0 14px;line-height:1.4;
+  max-height:2.8em;overflow:hidden}
+.pk-btn{display:flex;flex-direction:column;gap:1px;text-decoration:none;color:var(--ink);background:#f8f6f3;
+  border-radius:12px;padding:11px 14px;margin-bottom:9px;font-size:15px;font-weight:600}
+.pk-btn small{font-size:11px;color:var(--muted);font-weight:400}
+.pk-btn:active{background:#f1eeea}
+.pk-copy,.pk-cancel{width:100%;border:0;border-radius:12px;padding:12px;font-size:14px;font-weight:600;
+  background:#f1eeea;color:var(--ink)}
+.pk-copy{margin-top:3px}
+.pk-cancel{margin-top:9px;background:transparent;color:var(--muted)}
 
 @media(min-width:600px){
   main{max-width:520px;margin:0 auto}
@@ -210,12 +216,9 @@ footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
 
   <!-- 打卡点 & 美食 -->
   <section id="panel-food" class="panel">
-    <div class="card" style="padding:0">
-      <div class="map-wrap">
-        <div id="map"></div>
-        <div class="map-bar" id="map-bar">地图加载中…</div>
-        <button class="loc-btn" onclick="locateMe()" title="定位我的位置">📍</button>
-      </div>
+    <div class="card" id="exp-card">
+      <h2>🌸 特色体验</h2>
+      <div class="food-list" id="exp-list"></div>
     </div>
 
     <div class="card">
@@ -232,20 +235,36 @@ footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
     </div>
   </section>
 
-  <footer>数据来自 3 篇小红书图文 + 29 篇美食笔记 · 2026-09-14</footer>
+  <footer>数据来自 3 篇小红书图文 + 29 篇美食笔记 · 2026-09-14<br>点「导航」→ 选地图 App → 直接跳转本机导航</footer>
 </main>
 
-<script src="https://map.qq.com/api/gljs?libraries=service,geometry&v=1&key=2ASBZ-7EUK7-FTTXJ-H4LNG-WF4GJ-CBFK4"></script>
+<div class="picker-mask" id="pickerMask">
+  <div class="picker">
+    <div class="pk-title">用哪个 App 导航？</div>
+    <div class="pk-dest" id="pkDest"></div>
+    <a class="pk-btn" id="pkApple"> Apple 地图<small>iPhone 自带，最稳</small></a>
+    <a class="pk-btn" id="pkAmap">高德地图<small>需已安装高德</small></a>
+    <a class="pk-btn" id="pkBaidu">百度地图<small>需已安装百度地图</small></a>
+    <button class="pk-copy" id="pkCopy">复制地址</button>
+    <button class="pk-cancel" id="pkCancel">取消</button>
+  </div>
+</div>
+
 <script>
-const TRIP = {"meta": {"title": "泉州 · 9.20-9.22 旅行指南", "travelers": 2, "hotel": {"name": "安可*南法夏日花园设计师民宿", "branch": "西街开元寺店", "address": "泉州市鲤城区西街开元寺附近"}, "train": {"arrive": "2026-09-20 21:29", "depart": "2026-09-22 16:32", "from": "深圳光明城站", "to": "泉州站"}}, "tips": [{"icon": "☀️", "title": "9-10 月天气", "text": "雨季基本过去，天气舒适，但仍建议带晴雨伞。"}, {"icon": "🚗", "title": "古城交通", "text": "泉州没有地铁；古城内靠小白车（招手停、2 元/人、无固定站牌），远途打网约车，别坐黑车。"}, {"icon": "🎭", "title": "木偶戏抢票", "text": "想看的提前规划：每周四上午 10:00 放票，前排中间难抢，可考虑前侧方。"}, {"icon": "🏛", "title": "周一闭馆", "text": "闽台缘博物馆、海交馆、非遗馆周一闭馆（节假日周一正常开放）。"}, {"icon": "👗", "title": "清净寺穿着", "text": "去清净寺别穿暴露衣物，短裤/短裙/拖鞋都不行。"}, {"icon": "👟", "title": "别穿高跟鞋", "text": "古城景点走路多，石板路不好走，穿舒适鞋子。"}, {"icon": "🌸", "title": "簪花建议", "text": "蟳埔村簪花人挤人，若特别想去建议早到；40 元左右可簪真花，可带走。"}, {"icon": "🍜", "title": "西街吃饭", "text": "西街主街小吃重复且偏游客，拐进旁边小巷子找吃的更地道。"}], "itinerary": [{"date": "9/20 周日", "weekday": "周日", "theme": "抵达 + 夜游西街", "segments": [{"time": "21:29", "title": "抵达泉州站", "desc": "高铁到达（深圳光明城 17:12 发车，车程约 4 小时 17 分），出站后打车/网约车前往民宿，车程约 30-40 分钟。"}, {"time": "22:10", "title": "入住民宿", "desc": "安可*南法夏日花园设计师民宿（西街开元寺店），稍作休整。"}, {"time": "22:40", "title": "晚餐 / 夜宵：姜母鸭 · 沙茶火锅", "desc": "夜已深，就近选斯丹姜母鸭（涂门街总店，营业较晚）或巷仔阿花沙茶火锅（西街夜市），都在古城内。"}, {"time": "23:30", "title": "夜游西街 + 中山路", "desc": "逛西街夜市、钟楼、中山路骑楼夜景；部分小吃店仍营业，可顺路买坤记芋头饼。注意 24:00 前后陆续打烊，早点回民宿休息。"}]}, {"date": "9/21 周一", "weekday": "周一", "theme": "古城寺庙巡礼 + 西街深度逛", "segments": [{"time": "08:00", "title": "早餐：面线糊", "desc": "水门国仔面线糊（中山中路），本地人早餐标配，记得加油条。"}, {"time": "09:00", "title": "开元寺", "desc": "必去。西街走到头即达。看东西塔、大雄宝殿石雕、古船馆宋代沉船；红墙拍照人多，想安静要早到。"}, {"time": "11:00", "title": "西街 + 中山路", "desc": "沿西街逛到钟楼，再转中山路。可尝亚佛润饼皮、坤记芋头饼、风鲤治茶。"}, {"time": "12:30", "title": "午餐：卤面 / 泉州菜", "desc": "泮宫卤面（新门街）或八芳林·泉州菜馆（西街附近巷子里，海蛎煎）。"}, {"time": "14:30", "title": "承天寺", "desc": "必去。比开元寺清静太多，大榕树遮天蔽日，适合放空。"}, {"time": "16:00", "title": "关岳庙", "desc": "必去。香火旺、建筑漂亮、剪瓷雕值得抬头看；傍晚夜景也很美。"}, {"time": "17:30", "title": "天后宫 + 石花膏", "desc": "顺路去天后宫，妈祖像庄严、剪瓷雕精致；出来吃秉正堂石花膏（天后路总店）。"}, {"time": "19:00", "title": "晚餐：牛排 / 牛肉馆", "desc": "阿秋牛排（湖心街）或源记巷内牛肉馆（执节巷）；想就近可选张林姜母鸭（天后宫店）。"}, {"time": "20:30", "title": "可选：木偶戏 / 西街夜景", "desc": "若抢到票可去看提线木偶戏；否则继续逛西街夜市。"}]}, {"date": "9/22 周二", "weekday": "周二", "theme": "清净寺 + 返程", "segments": [{"time": "08:30", "title": "早餐：肉粽 / 小笼包", "desc": "侯阿婆烧肉粽（钟楼店）或远芳小笼包（中山南路）。"}, {"time": "09:30", "title": "清净寺", "desc": "伊斯兰古寺，异域风情建筑。注意穿着得体（短裤短裙拖鞋不可）。"}, {"time": "11:00", "title": "五店市 或 古城补漏", "desc": "若时间充裕且想拍照，可打车 30 分钟去晋江五店市；否则在古城闲逛/买伴手礼。"}, {"time": "12:30", "title": "午餐 + 退房", "desc": "就近吃美美阿姨醋肉（县后街）或后城面线糊，退房拿行李。"}, {"time": "14:00", "title": "前往泉州站", "desc": "打车/网约车前往泉州站，车程约 30-40 分钟，预留进站时间。"}, {"time": "16:32", "title": "返程高铁", "desc": "泉州站 → 深圳光明城站。"}]}], "sights": {"must": [{"name": "开元寺", "address": "泉州市鲤城区西街176号", "tag": "必去", "reason": "东西塔震撼、古船馆宋代沉船别错过；节假日红墙拍照人多，想安静要早到。"}, {"name": "承天寺", "address": "泉州市鲤城区南俊路84号", "tag": "必去", "reason": "比开元寺清静很多，藏在闹市，大榕树遮天蔽日。"}, {"name": "关岳庙", "address": "泉州市鲤城区涂门街186-196号", "tag": "必去", "reason": "香火旺、建筑漂亮、剪瓷雕夜景美，感受热烈的世俗信仰。"}], "nice": [{"name": "西街", "address": "泉州市鲤城区西街", "tag": "顺路逛", "reason": "泉州最有名的老街，但主街小吃重复；建议拐进旁边小巷子找吃的。"}, {"name": "中山路", "address": "泉州市鲤城区中山路", "tag": "顺路逛", "reason": "闽南骑楼老街，适合边走边吃，夜间也很美。"}, {"name": "天后宫", "address": "泉州市鲤城区南门天后路", "tag": "顺路去", "reason": "福建最大妈祖庙，闽南民俗文化浓厚，二三十分钟可逛完。"}, {"name": "清净寺", "address": "泉州市鲤城区涂门街108-110号", "tag": "注意穿着", "reason": "伊斯兰古寺、异域风情；勿穿短裤短裙拖鞋。"}], "extra": [{"name": "五店市传统街区", "address": "泉州市晋江市梅岭街道五店市", "tag": "备选", "reason": "闽南红砖古厝建筑群，适合拍照打卡；距古城约 30 分钟车程。"}, {"name": "洛阳桥", "address": "泉州市洛江区万安街道洛阳桥", "tag": "备选", "reason": "国内四大古桥之一，退潮可看桥墩牡蛎；距古城较远。"}], "skip": [{"name": "蟳埔村", "tag": "不推荐", "reason": "村子很小、游客极多、环境一般；簪花可去老城区或早到。"}, {"name": "洛伽寺", "tag": "不推荐", "reason": "远看壮观，实际可逛的不多，周边配套和交通一般。"}]}, "foods": [{"name": "斯丹姜母鸭", "dp_name": "斯丹姜母鸭·古法干香(泉州总店)", "address": "鲤中街道涂门街100号", "rating": 4.4, "price": 78, "mentions": 29, "cat": "老字号/经典", "matched": true, "meal": ["正餐"], "must": true, "note": "古法干香，人气最高", "district": null}, {"name": "水门国仔面线糊", "dp_name": "水门国仔面线糊(国仔中山路店)", "address": "中山中路120号（国大药房）", "rating": 4, "price": 25, "mentions": 24, "cat": "老字号/经典", "matched": true, "meal": ["早餐"], "must": true, "note": "本地人早餐标配，加油条", "district": null}, {"name": "巷仔阿花沙茶火锅", "dp_name": "巷仔阿花沙茶火锅(西街店)", "address": "西街373号大尾夜市", "rating": 4.4, "price": 78, "mentions": 18, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": true, "note": "西街夜市里，晚上氛围好", "district": null}, {"name": "泮宫卤面", "dp_name": "泮宫卤面(新门街店)", "address": "新门街309号", "rating": 4, "price": 36, "mentions": 15, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": true, "note": "卤汁浓稠，新门街", "district": null}, {"name": "侯阿婆肉粽", "dp_name": "侯阿婆·烧肉粽(钟楼店)", "address": "鲤中街道东街59号（中国工商银行斜对面）", "rating": 3.9, "price": 23, "mentions": 13, "cat": "老字号/经典", "matched": true, "meal": ["早餐", "小吃"], "must": true, "note": "钟楼附近，烧肉粽", "district": null}, {"name": "风鲤治茶", "dp_name": "风鲤治茶&闽南手作阿达子(西街店)", "address": "西街53号", "rating": 4, "price": 18, "mentions": 10, "cat": "本地人气店", "matched": true, "meal": ["小吃"], "must": true, "note": "西街53号，闽南阿达子", "district": null}, {"name": "美美阿姨醋肉", "dp_name": "美美阿姨醋肉(县后路店)", "address": "县后街22号", "rating": 4, "price": 16, "mentions": 8, "cat": "本地人气店", "matched": true, "meal": ["小吃"], "must": true, "note": "县后街，醋肉+菜粿", "district": null}, {"name": "秉正堂石花膏", "dp_name": "秉正堂石花膏(天后宫总店)", "address": "天后路1-3号", "rating": 3.6, "price": 17, "mentions": 8, "cat": "老字号/经典", "matched": true, "meal": ["甜品"], "must": true, "note": "天后路总店，四果汤", "district": null}, {"name": "五叔公土笋冻", "dp_name": "五叔公土笋冻(泉州总店)", "address": "美食街中段（你好酒店楼下）", "rating": 4, "price": 16, "mentions": 7, "cat": "老字号/经典", "matched": true, "meal": ["小吃"], "must": true, "note": "西街附近/美食街，勇敢者挑战", "district": null}, {"name": "阿秋牛排", "dp_name": "阿秋牛排(湖心街店)", "address": "湖心街500号东湖社区服务站旁边（近花园大酒店）", "rating": 4, "price": 47, "mentions": 6, "cat": "老字号/经典", "matched": true, "meal": ["正餐"], "must": true, "note": "闽南卤牛排，湖心街", "district": null}, {"name": "坤记芋头饼", "dp_name": "坤记芋头饼(西街店)", "address": "西街象峰巷6-1号", "rating": 4.3, "price": 11, "mentions": 4, "cat": "本地人气店", "matched": true, "meal": ["小吃"], "must": true, "note": "西街象峰巷", "district": null}, {"name": "张林姜母鸭", "dp_name": "张林姜母鸭(天后宫店)", "address": "天后路34号", "rating": 4.2, "price": 50, "mentions": 17, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "天后宫附近", "district": null}, {"name": "远芳小笼包", "dp_name": "远芳小笼包(中山路店)", "address": "临江街道中山南路381号(近侨光电影院)", "rating": 3.5, "price": 17, "mentions": 14, "cat": "老字号/经典", "matched": true, "meal": ["早餐"], "must": false, "note": "中山南路，实惠", "district": null}, {"name": "桥尾面线糊", "dp_name": "原桥尾面线糊", "address": "江滨南路与324国道交叉口西50米", "rating": 4, "price": 27, "mentions": 10, "cat": "本地人气店", "matched": true, "meal": ["早餐"], "must": false, "note": "江滨南路，较远", "district": null}, {"name": "阿波牛肉店", "dp_name": "阿波牛肉店(灯洲商业城安置房店)", "address": "宝洲街781号", "rating": 4.2, "price": 46, "mentions": 8, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "宝洲街", "district": null}, {"name": "六合沙茶火锅", "dp_name": "六合沙茶火锅(西街店)", "address": "开元街道中山北路27-8号", "rating": 3.9, "price": 97, "mentions": 8, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": false, "note": "中山北路", "district": null}, {"name": "忠记盐烧鸭", "dp_name": "忠记姜母鸭", "address": "开元街道崇福路91号(近市教委)", "rating": 4, "price": 86, "mentions": 6, "cat": "老字号/经典", "matched": true, "meal": [], "must": false, "note": "", "district": null}, {"name": "源记巷内牛肉馆", "dp_name": "源记巷内牛肉馆(总店)", "address": "执节巷28号", "rating": 4.6, "price": 37, "mentions": 6, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "执节巷，牛肉粳", "district": null}, {"name": "绿岛酒楼", "dp_name": "绿岛海鲜酒楼(九二路步行街店)", "address": "九二路步行街447-451号", "rating": 4.7, "price": 149, "mentions": 6, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "石狮，较远", "district": "石狮市"}, {"name": "米斯小庄庄", "dp_name": "米斯小庄庄·米斯奶茶铺", "address": "开元街道南俊北路28号", "rating": 4.5, "price": 29, "mentions": 6, "cat": "本地人气店", "matched": true, "meal": ["甜品"], "must": false, "note": "南俊北路，绵绵冰", "district": null}, {"name": "伍堡小海鲜大排档", "dp_name": "小海鲜大排档", "address": "伍堡村龙井南路东61号", "rating": 4.4, "price": 70, "mentions": 5, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": false, "note": "石狮伍堡村，远", "district": null}, {"name": "阿泉全牛馆", "dp_name": "阿泉全牛馆·世遗名店(泉州总店)", "address": "江南街道兴贤路(近环岛)", "rating": 4, "price": 47, "mentions": 4, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "兴贤路，江南片区", "district": null}, {"name": "涂门贡糖", "dp_name": "涂门贡糖(泉州市店)", "address": "南俊路87号", "rating": 4, "price": 26, "mentions": 3, "cat": "老字号/经典", "matched": true, "meal": ["伴手礼"], "must": false, "note": "南俊路，花生酥", "district": null}, {"name": "后城面线糊", "dp_name": "后城面线糊 | 祖师桥后城面线糊(百源路店)", "address": "鲤中街道后城街177号D101（招商银行斜对面欢立杯沿河进去十五米）", "rating": 4, "price": 20, "mentions": 3, "cat": "老字号/经典", "matched": true, "meal": ["早餐"], "must": false, "note": "后城街，环境有老城感", "district": null}, {"name": "阿莲大排档", "dp_name": "阿莲大排档(百源店)", "address": "百源路百宜巷45号(亚咪咕披萨往里走到头)", "rating": 4, "price": 80, "mentions": 3, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": false, "note": "百源路", "district": null}, {"name": "浦西大排档", "dp_name": "浦西特色大排档(浦西花园店)", "address": "江滨北路1176号", "rating": 3.8, "price": 84, "mentions": 2, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": false, "note": "江滨北路", "district": null}, {"name": "好成财牛排馆", "dp_name": "好成财牛排馆(涂门街总店)", "address": "涂门街221号", "rating": 3.5, "price": 38, "mentions": 1, "cat": "老字号/经典", "matched": true, "meal": ["正餐"], "must": false, "note": "涂门街", "district": null}, {"name": "桥仔头芋头饼", "dp_name": null, "address": null, "rating": null, "price": null, "mentions": 1, "cat": "老字号/经典", "matched": false, "meal": ["小吃"], "must": false, "note": "地址待确认", "district": null}], "source": {"notes": "行程融合 3 篇小红书图文（9.7 提醒、8.27 景点红黑榜、筹备一个月 3 天行程表）与之前抓取的美食清单。", "urls": ["https://xhslink.cn/o/7di6tQpgqkG", "https://xhslink.cn/o/8Y3Pumd36M", "https://xhslink.cn/o/1aq55kiwET7"]}};
+const TRIP = {"meta": {"title": "泉州 · 9.20-9.22 旅行指南", "travelers": 2, "hotel": {"name": "安可*南法夏日花园设计师民宿", "branch": "西街开元寺店", "address": "泉州市鲤城区西街开元寺附近"}, "train": {"arrive": "2026-09-20 21:29", "depart": "2026-09-22 16:32", "from": "深圳光明城站", "to": "泉州站"}}, "tips": [{"icon": "☀️", "title": "9-10 月天气", "text": "雨季基本过去，天气舒适，但仍建议带晴雨伞。"}, {"icon": "🚗", "title": "古城交通", "text": "泉州没有地铁；古城内靠小白车（招手停、2 元/人、无固定站牌），远途打网约车，别坐黑车。"}, {"icon": "🎭", "title": "木偶戏抢票", "text": "想看的提前规划：每周四上午 10:00 放票，前排中间难抢，可考虑前侧方。"}, {"icon": "🏛", "title": "周一闭馆", "text": "闽台缘博物馆、海交馆、非遗馆周一闭馆（节假日周一正常开放）。"}, {"icon": "👗", "title": "清净寺穿着", "text": "去清净寺别穿暴露衣物，短裤/短裙/拖鞋都不行。"}, {"icon": "👟", "title": "别穿高跟鞋", "text": "古城景点走路多，石板路不好走，穿舒适鞋子。"}, {"icon": "🍜", "title": "西街吃饭", "text": "西街主街小吃重复且偏游客，拐进旁边小巷子找吃的更地道。"}], "itinerary": [{"date": "9/20 周日", "weekday": "周日", "theme": "抵达 + 夜游西街", "segments": [{"time": "21:29", "title": "抵达泉州站", "desc": "高铁到达（深圳光明城 17:12 发车，车程约 4 小时 17 分），出站后打车/网约车前往民宿，车程约 30-40 分钟。"}, {"time": "22:10", "title": "入住民宿", "desc": "安可*南法夏日花园设计师民宿（西街开元寺店），稍作休整。"}, {"time": "22:40", "title": "晚餐 / 夜宵：姜母鸭 · 沙茶火锅", "desc": "夜已深，就近选斯丹姜母鸭（涂门街总店，营业较晚）或巷仔阿花沙茶火锅（西街夜市），都在古城内。"}, {"time": "23:30", "title": "夜游西街 + 中山路", "desc": "逛西街夜市、钟楼、中山路骑楼夜景；部分小吃店仍营业，可顺路买坤记芋头饼。注意 24:00 前后陆续打烊，早点回民宿休息。"}]}, {"date": "9/21 周一", "weekday": "周一", "theme": "古城寺庙巡礼 + 西街夜游", "segments": [{"time": "08:30", "title": "早餐", "desc": "睡到自然醒，民宿附近简便早餐（面线糊 / 肉粽），吃完开启古城漫步。"}, {"time": "10:30", "title": "开元寺", "desc": "必去。西街走到头即达。看东西塔、大雄宝殿石雕、古船馆宋代沉船；红墙拍照人多，想安静要早到。"}, {"time": "12:30", "title": "午餐：卤面 / 泉州菜", "desc": "泮宫卤面（新门街）或八芳林·泉州菜馆（西街附近巷子里，海蛎煎）。"}, {"time": "14:00", "title": "西街 + 中山路", "desc": "沿西街逛到钟楼，再转中山路。可尝亚佛润饼皮、坤记芋头饼、风鲤治茶。"}, {"time": "16:00", "title": "承天寺", "desc": "必去。比开元寺清静太多，大榕树遮天蔽日，适合放空。"}, {"time": "17:30", "title": "关岳庙", "desc": "必去。香火旺、建筑漂亮、剪瓷雕值得抬头看；傍晚夜景也很美。"}, {"time": "19:00", "title": "天后宫 + 石花膏", "desc": "顺路去天后宫，妈祖像庄严、剪瓷雕精致；出来吃秉正堂石花膏（天后路总店）。"}, {"time": "20:30", "title": "晚餐：牛排 / 牛肉馆", "desc": "阿秋牛排（湖心街）或源记巷内牛肉馆（执节巷）；想就近可选张林姜母鸭（天后宫店）。"}]}, {"date": "9/22 周二", "weekday": "周二", "theme": "清净寺 + 返程", "segments": [{"time": "08:30", "title": "早餐：肉粽 / 小笼包", "desc": "侯阿婆烧肉粽（钟楼店）或远芳小笼包（中山南路）。"}, {"time": "09:30", "title": "清净寺", "desc": "伊斯兰古寺，异域风情建筑。注意穿着得体（短裤短裙拖鞋不可）。"}, {"time": "11:00", "title": "五店市 或 古城补漏", "desc": "若时间充裕且想拍照，可打车 30 分钟去晋江五店市；否则在古城闲逛/买伴手礼。"}, {"time": "12:30", "title": "午餐 + 退房", "desc": "就近吃美美阿姨醋肉（县后街）或后城面线糊，退房拿行李。"}, {"time": "14:00", "title": "前往泉州站", "desc": "打车/网约车前往泉州站，车程约 30-40 分钟，预留进站时间。"}, {"time": "16:32", "title": "返程高铁", "desc": "泉州站 → 深圳光明城站。"}]}], "sights": {"must": [{"name": "开元寺", "address": "泉州市鲤城区西街176号", "tag": "必去", "reason": "东西塔震撼、古船馆宋代沉船别错过；节假日红墙拍照人多，想安静要早到。"}, {"name": "承天寺", "address": "泉州市鲤城区南俊路84号", "tag": "必去", "reason": "比开元寺清静很多，藏在闹市，大榕树遮天蔽日。"}, {"name": "关岳庙", "address": "泉州市鲤城区涂门街186-196号", "tag": "必去", "reason": "香火旺、建筑漂亮、剪瓷雕夜景美，感受热烈的世俗信仰。"}], "nice": [{"name": "西街", "address": "泉州市鲤城区西街", "tag": "顺路逛", "reason": "泉州最有名的老街，但主街小吃重复；建议拐进旁边小巷子找吃的。"}, {"name": "中山路", "address": "泉州市鲤城区中山路", "tag": "顺路逛", "reason": "闽南骑楼老街，适合边走边吃，夜间也很美。"}, {"name": "天后宫", "address": "泉州市鲤城区南门天后路", "tag": "顺路去", "reason": "福建最大妈祖庙，闽南民俗文化浓厚，二三十分钟可逛完。"}, {"name": "清净寺", "address": "泉州市鲤城区涂门街108-110号", "tag": "注意穿着", "reason": "伊斯兰古寺、异域风情；勿穿短裤短裙拖鞋。"}], "extra": [{"name": "五店市传统街区", "address": "泉州市晋江市梅岭街道五店市", "tag": "备选", "reason": "闽南红砖古厝建筑群，适合拍照打卡；距古城约 30 分钟车程。"}, {"name": "洛阳桥", "address": "泉州市洛江区万安街道洛阳桥", "tag": "备选", "reason": "国内四大古桥之一，退潮可看桥墩牡蛎；距古城较远。"}], "skip": [{"name": "洛伽寺", "tag": "不推荐", "reason": "远看壮观，实际可逛的不多，周边配套和交通一般。"}]}, "experiences": [], "foods": [{"name": "斯丹姜母鸭", "dp_name": "斯丹姜母鸭·古法干香(泉州总店)", "address": "鲤中街道涂门街100号", "rating": 4.4, "price": 78, "mentions": 29, "cat": "老字号/经典", "matched": true, "meal": ["正餐"], "must": true, "note": "古法干香，人气最高", "district": null}, {"name": "水门国仔面线糊", "dp_name": "水门国仔面线糊(国仔中山路店)", "address": "中山中路120号（国大药房）", "rating": 4, "price": 25, "mentions": 24, "cat": "老字号/经典", "matched": true, "meal": ["早餐"], "must": true, "note": "本地人早餐标配，加油条", "district": null}, {"name": "巷仔阿花沙茶火锅", "dp_name": "巷仔阿花沙茶火锅(西街店)", "address": "西街373号大尾夜市", "rating": 4.4, "price": 78, "mentions": 18, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": true, "note": "西街夜市里，晚上氛围好", "district": null}, {"name": "泮宫卤面", "dp_name": "泮宫卤面(新门街店)", "address": "新门街309号", "rating": 4, "price": 36, "mentions": 15, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": true, "note": "卤汁浓稠，新门街", "district": null}, {"name": "侯阿婆肉粽", "dp_name": "侯阿婆·烧肉粽(钟楼店)", "address": "鲤中街道东街59号（中国工商银行斜对面）", "rating": 3.9, "price": 23, "mentions": 13, "cat": "老字号/经典", "matched": true, "meal": ["早餐", "小吃"], "must": true, "note": "钟楼附近，烧肉粽", "district": null}, {"name": "风鲤治茶", "dp_name": "风鲤治茶&闽南手作阿达子(西街店)", "address": "西街53号", "rating": 4, "price": 18, "mentions": 10, "cat": "本地人气店", "matched": true, "meal": ["小吃"], "must": true, "note": "西街53号，闽南阿达子", "district": null}, {"name": "美美阿姨醋肉", "dp_name": "美美阿姨醋肉(县后路店)", "address": "县后街22号", "rating": 4, "price": 16, "mentions": 8, "cat": "本地人气店", "matched": true, "meal": ["小吃"], "must": true, "note": "县后街，醋肉+菜粿", "district": null}, {"name": "秉正堂石花膏", "dp_name": "秉正堂石花膏(天后宫总店)", "address": "天后路1-3号", "rating": 3.6, "price": 17, "mentions": 8, "cat": "老字号/经典", "matched": true, "meal": ["甜品"], "must": true, "note": "天后路总店，四果汤", "district": null}, {"name": "五叔公土笋冻", "dp_name": "五叔公土笋冻(泉州总店)", "address": "美食街中段（你好酒店楼下）", "rating": 4, "price": 16, "mentions": 7, "cat": "老字号/经典", "matched": true, "meal": ["小吃"], "must": true, "note": "西街附近/美食街，勇敢者挑战", "district": null}, {"name": "阿秋牛排", "dp_name": "阿秋牛排(湖心街店)", "address": "湖心街500号东湖社区服务站旁边（近花园大酒店）", "rating": 4, "price": 47, "mentions": 6, "cat": "老字号/经典", "matched": true, "meal": ["正餐"], "must": true, "note": "闽南卤牛排，湖心街", "district": null}, {"name": "坤记芋头饼", "dp_name": "坤记芋头饼(西街店)", "address": "西街象峰巷6-1号", "rating": 4.3, "price": 11, "mentions": 4, "cat": "本地人气店", "matched": true, "meal": ["小吃"], "must": true, "note": "西街象峰巷", "district": null}, {"name": "张林姜母鸭", "dp_name": "张林姜母鸭(天后宫店)", "address": "天后路34号", "rating": 4.2, "price": 50, "mentions": 17, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "天后宫附近", "district": null}, {"name": "远芳小笼包", "dp_name": "远芳小笼包(中山路店)", "address": "临江街道中山南路381号(近侨光电影院)", "rating": 3.5, "price": 17, "mentions": 14, "cat": "老字号/经典", "matched": true, "meal": ["早餐"], "must": false, "note": "中山南路，实惠", "district": null}, {"name": "桥尾面线糊", "dp_name": "原桥尾面线糊", "address": "江滨南路与324国道交叉口西50米", "rating": 4, "price": 27, "mentions": 10, "cat": "本地人气店", "matched": true, "meal": ["早餐"], "must": false, "note": "江滨南路，较远", "district": null}, {"name": "阿波牛肉店", "dp_name": "阿波牛肉店(灯洲商业城安置房店)", "address": "宝洲街781号", "rating": 4.2, "price": 46, "mentions": 8, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "宝洲街", "district": null}, {"name": "六合沙茶火锅", "dp_name": "六合沙茶火锅(西街店)", "address": "开元街道中山北路27-8号", "rating": 3.9, "price": 97, "mentions": 8, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": false, "note": "中山北路", "district": null}, {"name": "忠记盐烧鸭", "dp_name": "忠记姜母鸭", "address": "开元街道崇福路91号(近市教委)", "rating": 4, "price": 86, "mentions": 6, "cat": "老字号/经典", "matched": true, "meal": [], "must": false, "note": "", "district": null}, {"name": "源记巷内牛肉馆", "dp_name": "源记巷内牛肉馆(总店)", "address": "执节巷28号", "rating": 4.6, "price": 37, "mentions": 6, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "执节巷，牛肉粳", "district": null}, {"name": "绿岛酒楼", "dp_name": "绿岛海鲜酒楼(九二路步行街店)", "address": "九二路步行街447-451号", "rating": 4.7, "price": 149, "mentions": 6, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "石狮，较远", "district": "石狮市"}, {"name": "米斯小庄庄", "dp_name": "米斯小庄庄·米斯奶茶铺", "address": "开元街道南俊北路28号", "rating": 4.5, "price": 29, "mentions": 6, "cat": "本地人气店", "matched": true, "meal": ["甜品"], "must": false, "note": "南俊北路，绵绵冰", "district": null}, {"name": "伍堡小海鲜大排档", "dp_name": "小海鲜大排档", "address": "伍堡村龙井南路东61号", "rating": 4.4, "price": 70, "mentions": 5, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": false, "note": "石狮伍堡村，远", "district": null}, {"name": "阿泉全牛馆", "dp_name": "阿泉全牛馆·世遗名店(泉州总店)", "address": "江南街道兴贤路(近环岛)", "rating": 4, "price": 47, "mentions": 4, "cat": "本地人气店", "matched": true, "meal": ["正餐"], "must": false, "note": "兴贤路，江南片区", "district": null}, {"name": "涂门贡糖", "dp_name": "涂门贡糖(泉州市店)", "address": "南俊路87号", "rating": 4, "price": 26, "mentions": 3, "cat": "老字号/经典", "matched": true, "meal": ["伴手礼"], "must": false, "note": "南俊路，花生酥", "district": null}, {"name": "后城面线糊", "dp_name": "后城面线糊 | 祖师桥后城面线糊(百源路店)", "address": "鲤中街道后城街177号D101（招商银行斜对面欢立杯沿河进去十五米）", "rating": 4, "price": 20, "mentions": 3, "cat": "老字号/经典", "matched": true, "meal": ["早餐"], "must": false, "note": "后城街，环境有老城感", "district": null}, {"name": "阿莲大排档", "dp_name": "阿莲大排档(百源店)", "address": "百源路百宜巷45号(亚咪咕披萨往里走到头)", "rating": 4, "price": 80, "mentions": 3, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": false, "note": "百源路", "district": null}, {"name": "浦西大排档", "dp_name": "浦西特色大排档(浦西花园店)", "address": "江滨北路1176号", "rating": 3.8, "price": 84, "mentions": 2, "cat": "本地人气店", "matched": true, "meal": ["晚餐"], "must": false, "note": "江滨北路", "district": null}, {"name": "好成财牛排馆", "dp_name": "好成财牛排馆(涂门街总店)", "address": "涂门街221号", "rating": 3.5, "price": 38, "mentions": 1, "cat": "老字号/经典", "matched": true, "meal": ["正餐"], "must": false, "note": "涂门街", "district": null}, {"name": "桥仔头芋头饼", "dp_name": null, "address": null, "rating": null, "price": null, "mentions": 1, "cat": "老字号/经典", "matched": false, "meal": ["小吃"], "must": false, "note": "地址待确认", "district": null}], "source": {"notes": "行程融合 3 篇小红书图文（9.7 提醒、8.27 景点红黑榜、筹备一个月 3 天行程表）与之前抓取的美食清单。", "urls": ["https://xhslink.cn/o/7di6tQpgqkG", "https://xhslink.cn/o/8Y3Pumd36M", "https://xhslink.cn/o/1aq55kiwET7"]}};
 const SIGHT_EMOJI = {"必去":"✅","顺路逛":"🚶","注意穿着":"👗","备选":"📌","不推荐":"❌"};
+
+function attrEsc(s){
+  return String(s==null?'':s)
+    .replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+function txt(s){ return String(s==null?'':s); }
 
 function switchTab(id){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
   event.target.classList.add('active');
-  if(id==='food' && !mapInited) initMap();
 }
 
 // ---------- 交通 & 景点 ----------
@@ -280,8 +299,7 @@ renderSights('extra','sights-extra');
 renderSights('skip','sights-skip');
 
 // ---------- 美食列表 ----------
-let foodData = TRIP.foods;
-let currentFoodFilter = 'all';
+const foodData = TRIP.foods;
 const foodList = document.getElementById('food-list');
 const foodFilter = document.getElementById('food-filter');
 foodFilter.addEventListener('click', e=>{
@@ -292,222 +310,79 @@ foodFilter.addEventListener('click', e=>{
 });
 
 function renderFood(filter='all'){
-  currentFoodFilter = filter;
   let list = foodData;
   if(filter==='must') list = foodData.filter(f=>f.must);
   else if(filter!=='all') list = foodData.filter(f=>f.meal && f.meal.includes(filter));
   if(!list.length){ foodList.innerHTML='<div class="empty">没有符合条件的美食</div>'; return; }
-  foodList.innerHTML = list.map((f,i)=>`
+  foodList.innerHTML = list.map((f,i)=>{
+    const dest = [f.dp_name||f.name, f.address||''].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+    return `
     <div class="food ${f.must?'must':''}">
       <div class="rank">${i+1}</div>
       <div class="body">
-        <div class="name">${f.name}<span class="tag ${f.must?'must':''}">${f.must?'🔥 重点':'普通'}</span></div>
+        <div class="name">${txt(f.name)}<span class="tag ${f.must?'must':''}">${f.must?'🔥 重点':'普通'}</span></div>
         <div class="tags">
-          ${f.meal.map(m=>`<span class="tag">${m}</span>`).join('')}
+          ${(f.meal||[]).map(m=>`<span class="tag">${m}</span>`).join('')}
           ${f.rating?`<span class="tag">⭐ ${f.rating}</span>`:''}
           ${f.price?`<span class="tag">¥${f.price}/人</span>`:''}
         </div>
-        ${f.note?`<div class="note">${f.note}</div>`:''}
-        <div class="addr">📍 ${f.dp_name||f.name} ${f.address?f.address:''}</div>
+        ${f.note?`<div class="note">${txt(f.note)}</div>`:''}
+        <div class="addr">📍 ${txt(dest) || '地址待确认'}</div>
       </div>
-      <button class="nav" id="nav-${i}" data-name="${f.name.replace(/"/g,'&quot;')}" onclick="openAppleMapsFor('${f.name.replace(/'/g,"\\'")}')" ${f.loc?'':'disabled'}>${f.loc?'导航':'定位中'}</button>
-    </div>
-  `).join('');
-  if(window.searcher){
-    list.forEach(f=>{
-      if(!f.loc && f.matched && f.address){
-        geocodeFood(f).then(loc=>{ if(loc){ f.loc=loc; enableFoodButtons(); } });
-      }
-    });
-  }
+      <button class="nav" data-name="${attrEsc(f.name)}" data-dest="${attrEsc(dest)}">导航</button>
+    </div>`;
+  }).join('');
 }
 renderFood();
 
-function openAppleMapsFor(name){
-  const f = foodData.find(x=>x.name===name);
-  if(!f || !f.loc){ alert('坐标暂未获取，请查看地址'); return; }
-  const wgs = gcj02ToWgs84(f.loc.lat, f.loc.lng);
-  window.location.href = `http://maps.apple.com/?daddr=${wgs.lat},${wgs.lng}&q=${encodeURIComponent(f.name)}`;
-}
+foodList.addEventListener('click', e=>{
+  const btn = e.target.closest('.nav');
+  if(!btn) return;
+  openMapPicker(btn.dataset.name, btn.dataset.dest);
+});
 
-function geocodeFood(f){
-  return new Promise(resolve=>{
-    if(!window.searcher){ resolve(null); return; }
-    searcher.search({
-      keyword: f.dp_name || f.name,
-      boundary: 'region(泉州市,0)',
-      page_size: 5
-    }).then(res=>{
-      const data = res.data || [];
-      let best = data[0];
-      if(f.address && data.length>1){
-        // prefer address match
-        best = data.find(d=>d.address && d.address.includes(f.address.replace(/^.*?区/,''))) || data[0];
-      }
-      resolve(best ? best.location : null);
-    }).catch(()=>resolve(null));
-  });
+// ---------- 特色体验（空则整卡隐藏）----------
+function renderExps(){
+  const list = TRIP.experiences || [];
+  const box = document.getElementById('exp-list');
+  if(!list.length){ document.getElementById('exp-card').style.display='none'; return; }
+  box.innerHTML = list.map(e=>{
+    const dest = [e.name, e.address||''].filter(Boolean).join(' ').replace(/\s+/g,' ').trim();
+    return `
+    <div class="food">
+      <div class="body">
+        <div class="name">${txt(e.name)}<span class="tag must">${txt(e.tag)||'体验'}</span></div>
+        <div class="tags">${e.time?`<span class="tag">🕐 ${e.time}</span>`:''}</div>
+        ${e.reason?`<div class="note">${txt(e.reason)}</div>`:''}
+        <div class="addr">📍 ${txt(dest)}</div>
+      </div>
+      <button class="nav" data-name="${attrEsc(e.name)}" data-dest="${attrEsc(dest)}">导航</button>
+    </div>`;
+  }).join('');
 }
+renderExps();
 
-function enableFoodButtons(){
-  foodData.filter(f=>f.matched && f.address).forEach(f=>{
-    if(f.loc){
-      document.querySelectorAll(`button[data-name="${f.name.replace(/"/g,'\\"')}"]`).forEach(btn=>{
-        btn.disabled=false; btn.textContent='导航';
-      });
-    }
-  });
+// ---------- 选地图 App（零 key：只用「店名 + 地址」文字）----------
+function openMapPicker(name, dest){
+  const q = (dest || name || '').trim();
+  document.getElementById('pkDest').textContent = q;
+  const e = encodeURIComponent(q);
+  const en = encodeURIComponent(name || q);
+  document.getElementById('pkApple').href = `https://maps.apple.com/?daddr=${e}&q=${en}`;
+  document.getElementById('pkAmap').href  = `https://uri.amap.com/search?keyword=${e}&city=${encodeURIComponent('泉州')}&callnative=1`;
+  document.getElementById('pkBaidu').href = `https://api.map.baidu.com/direction?destination=${e}&region=${encodeURIComponent('泉州市')}&mode=driving&output=html&src=webapp.guide`;
+  document.getElementById('pkCopy').dataset.dest = q;
+  document.getElementById('pickerMask').classList.add('show');
 }
-
-// ---------- 地图 ----------
-let map, mapInited=false, markerLayer, myMarker, searcher;
-function initMap(){
-  if(mapInited) return;
-  mapInited = true;
-  const bar = document.getElementById('map-bar');
-  try{
-    const center = new TMap.LatLng(24.908,118.589);
-    map = new TMap.Map('map',{center, zoom:13});
-    searcher = new TMap.service.Search({pageSize:5});
-    markerLayer = new TMap.MultiMarker({map, styles:{}, geometries:[]});
-    loadMapPoints();
-  }catch(e){
-    bar.textContent='地图初始化失败，请查看列表与地址';
-    bar.style.background='rgba(200,60,60,.8)';
-  }
-}
-
-async function loadMapPoints(){
-  const bar = document.getElementById('map-bar');
-  const points=[];
-  const foodsToPlot = foodData.filter(f=>f.matched && f.address).slice(0,20); // top 20
-  let ok=0;
-  for(const f of foodsToPlot){
-    const loc = await geocodeFood(f);
-    if(loc){ f.loc=loc; points.push({id:f.name, position:loc, name:f.name, type:'food'}); ok++; }
-  }
-  // 景点
-  const sights = [...TRIP.sights.must, ...TRIP.sights.nice, ...TRIP.sights.extra];
-  for(const s of sights){
-    const loc = await geocodeSpot(s);
-    if(loc){ s.loc=loc; points.push({id:s.name, position:loc, name:s.name, type:'sight'}); ok++; }
-  }
-  // 民宿
-  const hotelLoc = await geocodeSpot({name:TRIP.meta.hotel.name, address:TRIP.meta.hotel.address});
-  if(hotelLoc){ points.push({id:'hotel', position:hotelLoc, name:'民宿', type:'hotel'}); ok++; }
-
-  const styles = {
-    food: new TMap.MarkerStyle({width:22, height:22, anchor:{x:11,y:11}, color:'#d36b45'}),
-    sight: new TMap.MarkerStyle({width:22, height:22, anchor:{x:11,y:11}, color:'#5b8ea3'}),
-    hotel: new TMap.MarkerStyle({width:24, height:24, anchor:{x:12,y:12}, color:'#6b9e75'})
-  };
-  markerLayer.setGeometries(points.map(p=>({id:p.id, styleId:p.type, position:p.position, properties:{name:p.name,type:p.type}})));
-  markerLayer.setStyles(styles);
-  markerLayer.on('click', e=>{
-    const p = e.geometry.properties;
-    const info = new TMap.InfoWindow({map, position:e.geometry.position, content:`<div style="font-size:13px;padding:6px;"><b>${p.name}</b><br><span style="color:#888;font-size:11px">${p.type==='food'?'美食':p.type==='sight'?'景点':'民宿'}</span></div>`});
-    info.open();
-  });
-  if(points.length){
-    fitToPoints(points.map(p=>p.position));
-  }
-  bar.textContent=`已定位 ${ok} 个地点 · 红=美食 蓝=景点 绿=民宿`;
-  enableFoodButtons();
-}
-
-function fitToPoints(latlngs){
-  if(!latlngs.length) return;
-  let minLat=latlngs[0].lat, maxLat=latlngs[0].lat, minLng=latlngs[0].lng, maxLng=latlngs[0].lng;
-  latlngs.forEach(p=>{
-    if(p.lat<minLat) minLat=p.lat; if(p.lat>maxLat) maxLat=p.lat;
-    if(p.lng<minLng) minLng=p.lng; if(p.lng>maxLng) maxLng=p.lng;
-  });
-  const center = new TMap.LatLng((minLat+maxLat)/2, (minLng+maxLng)/2);
-  const span = Math.max(maxLat-minLat, maxLng-minLng);
-  const zoom = span < 0.01 ? 15 : span < 0.05 ? 13 : span < 0.15 ? 12 : 11;
-  map.setCenter(center);
-  map.setZoom(zoom);
-}
-
-function geocodeSpot(s){
-  return new Promise(resolve=>{
-    if(!window.searcher){ resolve(null); return; }
-    searcher.search({
-      keyword: s.name,
-      boundary: 'region(泉州市,0)',
-      page_size: 5
-    }).then(res=>{
-      const data = (res.data || []);
-      let best = data[0];
-      if(s.address && data.length>1){
-        best = data.find(d=>d.address && d.address.includes(s.address.replace(/^.*?区/,'').slice(0,8))) || data[0];
-      }
-      resolve(best ? best.location : null);
-    }).catch(()=>resolve(null));
-  });
-}
-
-function locateMe(){
-  if(!navigator.geolocation){ alert('你的设备不支持定位'); return; }
-  navigator.geolocation.getCurrentPosition(pos=>{
-    const wgs = {lat:pos.coords.latitude, lng:pos.coords.longitude};
-    const gcj = wgs84ToGcj02(wgs.lat, wgs.lng);
-    if(!myMarker){
-      myMarker = new TMap.MultiMarker({
-        map,
-        styles:{me: new TMap.MarkerStyle({width:18,height:18,anchor:{x:9,y:9},color:'#8a7cc1'})},
-        geometries:[{id:'me', styleId:'me', position:new TMap.LatLng(gcj.lat, gcj.lng), properties:{name:'我'}}]
-      });
-    }else{
-      myMarker.setGeometries([{id:'me', styleId:'me', position:new TMap.LatLng(gcj.lat, gcj.lng)}]);
-    }
-    map.setCenter(new TMap.LatLng(gcj.lat, gcj.lng));
-    map.setZoom(15);
-  }, err=>{
-    alert('定位失败：'+err.message);
-  });
-}
-
-// 坐标系转换（GCJ-02 <-> WGS-84）
-function transformLat(lng, lat){
-  let ret = -100.0 + 2.0*lng + 3.0*lat + 0.2*lat*lat + 0.1*lng*lat + 0.2*Math.sqrt(Math.abs(lng));
-  ret += (20.0*Math.sin(6.0*lng*Math.PI) + 20.0*Math.sin(2.0*lng*Math.PI)) * 2.0 / 3.0;
-  ret += (20.0*Math.sin(lat*Math.PI) + 40.0*Math.sin(lat/3.0*Math.PI)) * 2.0 / 3.0;
-  ret += (160.0*Math.sin(lat/12.0*Math.PI) + 320.0*Math.sin(lat*Math.PI/30.0)) * 2.0 / 3.0;
-  return ret;
-}
-function transformLng(lng, lat){
-  let ret = 300.0 + lng + 2.0*lat + 0.1*lng*lng + 0.1*lng*lat + 0.1*Math.sqrt(Math.abs(lng));
-  ret += (20.0*Math.sin(6.0*lng*Math.PI) + 20.0*Math.sin(2.0*lng*Math.PI)) * 2.0 / 3.0;
-  ret += (20.0*Math.sin(lng*Math.PI) + 40.0*Math.sin(lng/3.0*Math.PI)) * 2.0 / 3.0;
-  ret += (150.0*Math.sin(lng/12.0*Math.PI) + 300.0*Math.sin(lng/30.0*Math.PI)) * 2.0 / 3.0;
-  return ret;
-}
-function wgs84ToGcj02(lng, lat){
-  if(outOfChina(lng, lat)) return {lng, lat};
-  let dLat = transformLat(lng - 105.0, lat - 35.0);
-  let dLng = transformLng(lng - 105.0, lat - 35.0);
-  const radLat = lat / 180.0 * Math.PI;
-  let magic = Math.sin(radLat); magic = 1 - 0.006693421622965943 * magic * magic;
-  const sqrtMagic = Math.sqrt(magic);
-  dLat = (dLat * 180.0) / ((6378245.0 * (1 - 0.006693421622965943)) / (magic * sqrtMagic) * Math.PI);
-  dLng = (dLng * 180.0) / (6378245.0 / sqrtMagic * Math.cos(radLat) * Math.PI);
-  return {lng: lng + dLng, lat: lat + dLat};
-}
-function gcj02ToWgs84(lng, lat){
-  if(outOfChina(lng, lat)) return {lng, lat};
-  let dLat = transformLat(lng - 105.0, lat - 35.0);
-  let dLng = transformLng(lng - 105.0, lat - 35.0);
-  const radLat = lat / 180.0 * Math.PI;
-  let magic = Math.sin(radLat); magic = 1 - 0.006693421622965943 * magic * magic;
-  const sqrtMagic = Math.sqrt(magic);
-  dLat = (dLat * 180.0) / ((6378245.0 * (1 - 0.006693421622965943)) / (magic * sqrtMagic) * Math.PI);
-  dLng = (dLng * 180.0) / (6378245.0 / sqrtMagic * Math.cos(radLat) * Math.PI);
-  return {lng: lng - dLng, lat: lat - dLat};
-}
-function outOfChina(lng, lat){
-  return lng < 72.004 || lng > 137.8347 || lat < 0.8293 || lat > 55.8271;
-}
+function closePicker(){ document.getElementById('pickerMask').classList.remove('show'); }
+document.getElementById('pkCancel').addEventListener('click', closePicker);
+document.getElementById('pickerMask').addEventListener('click', e=>{ if(e.target.id==='pickerMask') closePicker(); });
+document.getElementById('pkCopy').addEventListener('click', async function(){
+  const t = this.dataset.dest || '';
+  try { await navigator.clipboard.writeText(t); this.textContent='已复制 ✓'; }
+  catch(_) { this.textContent='复制失败，请长按上面的地址'; }
+  setTimeout(()=>{ this.textContent='复制地址'; }, 1600);
+});
 </script>
 </body>
 </html>
