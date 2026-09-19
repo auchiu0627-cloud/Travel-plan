@@ -8,370 +8,475 @@
 <title>泉州 · 9.20-9.22 旅行指南</title>
 <style>
 /* ═══════════════════════════════════════════════════════════
-   泉州旅行指南 · SWISS EDITION (V5)
-   纯白底 · 黑色骨架线 · 国际橙 #FF4D00 单色强调 · 无圆角 · 无玻璃
-   仅替换视觉层；所有 DOM / data-* / 交互 JS 保持不变
+   旅游规划 · 液态玻璃 · 4 段交互式
+   ① 总览  ② 交通/详细规划  ③ 景点介绍  ④ 美食打卡点
    ═══════════════════════════════════════════════════════════ */
 :root{
-  color-scheme:light;
-  --bg:#fff; --ink:#151515; --muted:#666; --line:#e4e4e4; --line2:#ccc;
-  --brand:#ff4d00; --brand-dk:#c53b00; --brand-tint:#fff1e9;
-  --mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  --sans:"Helvetica Neue",Helvetica,-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;
+  --font-zh: "LXGW WenKai","霞鹜文楷","Source Han Serif SC","思源宋体",
+             -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;
+  --cream:#F4F8F4; --ink:#1C2621; --muted:#6B8071; --line:#D6E8D6;
+  --brand:#72997B; --brand-2:#8DB795; --mint:#CEE7C7; --mint-soft:#91C5AE;
+  --peach:#F3B491; --terra:#D68067;
+  --up:#D68067; --down:#72997B;
+  --ink-soft: rgba(28,38,33,0.58);
+  --radius: 26px;
 }
-*{ box-sizing:border-box; }
-html,body{ margin:0; }
+*{ box-sizing:border-box; margin:0; padding:0; }
 body{
-  font-family:var(--sans); color:var(--ink); background:#fff;
-  -webkit-font-smoothing:antialiased; line-height:1.7; overflow-x:hidden;
-  font-size:14px;
+  font-family: var(--font-zh); color: var(--ink);
+  background: linear-gradient(135deg, #dad8d3 0%, #d0cec9 45%, #c8c6c1 100%);
+  -webkit-font-smoothing: antialiased; line-height:1.75; overflow-x:hidden;
 }
 
-/* 去掉玻璃态背景层 */
-.bg{ display:none; }
+/* ══ 背景层 ══ */
+.bg{ position:fixed; inset:0; z-index:0; overflow:hidden; pointer-events:none;
+  background-image:
+    linear-gradient(rgba(28,38,33,0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(28,38,33,0.045) 1px, transparent 1px);
+  background-size: 46px 46px; }
+.bg .blob{ position:absolute; border-radius:50%; filter:blur(40px); opacity:.55; }
+.bg .b1{ width:520px; height:520px; left:-120px; top:-90px;
+  background:radial-gradient(circle, rgba(114,153,123,0.55), rgba(114,153,123,0) 70%); }
+.bg .b2{ width:440px; height:440px; right:-100px; top:120px;
+  background:radial-gradient(circle, rgba(243,180,145,0.50), rgba(243,180,145,0) 70%); }
+.bg .b3{ width:560px; height:560px; left:25%; bottom:-180px;
+  background:radial-gradient(circle, rgba(145,197,174,0.50), rgba(145,197,174,0) 70%); }
+.bg .b4{ width:380px; height:380px; right:18%; bottom:60px;
+  background:radial-gradient(circle, rgba(206,231,199,0.55), rgba(206,231,199,0) 70%); }
+.bg .wm{ position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+  font-size:300px; font-weight:800; letter-spacing:-10px;
+  color:rgba(28,38,33,0.05); white-space:nowrap; user-select:none; }
 
 .wrap{ position:relative; z-index:1; max-width:1000px; margin:0 auto;
   padding:26px 22px 60px; display:flex; flex-direction:column; gap:18px; }
 
-/* ══ 玻璃 → 白底卡片 + 黑色顶线（瑞士编辑风签名） ══ */
+/* ══ 玻璃 ══ */
 .glass{
-  background:#fff; border:1px solid var(--line2); border-top:2px solid var(--ink);
-  border-radius:0; box-shadow:none; position:relative; overflow:hidden;
+  background:
+    linear-gradient(155deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.012) 38%, rgba(114,153,123,0.05) 100%),
+    rgba(255,255,255,0.02);
+  backdrop-filter: blur(26px) saturate(230%);
+  -webkit-backdrop-filter: blur(26px) saturate(230%);
+  border:1.5px solid transparent; border-radius:var(--radius);
+  box-shadow:
+    inset 0 1px 1px rgba(255,255,255,0.96),
+    inset 0 -3px 12px rgba(60,55,70,0.07),
+    0 2px 6px  rgba(60,55,70,0.10),
+    0 12px 30px rgba(60,55,70,0.12),
+    0 32px 72px rgba(60,55,70,0.16);
+  position:relative; overflow:hidden;
 }
-.pad{ padding:22px 24px 24px; }
+.glass::before{
+  content:""; position:absolute; inset:0; border-radius:inherit; padding:1.5px;
+  background: linear-gradient(140deg,
+    rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.22) 22%,
+    rgba(114,153,123,0.34) 52%, rgba(145,197,174,0.24) 74%,
+    rgba(255,255,255,0.72) 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor; mask-composite: exclude;
+  pointer-events:none; z-index:3;
+}
+.glass::after{ content:""; position:absolute; top:-60%; left:-28%; width:46%; height:220%;
+  background: linear-gradient(105deg, rgba(255,255,255,0.42) 0%, rgba(255,255,255,0) 55%);
+  transform: rotate(10deg); pointer-events:none; z-index:2; }
+.glass .glints{ position:absolute; top:13px; left:18px; z-index:4; pointer-events:none; }
+.glass .glints::before,.glass .glints::after{ content:""; position:absolute;
+  border-radius:50%; background:rgba(255,255,255,0.95); filter:blur(.7px); }
+.glass .glints::before{ width:17px; height:8px; transform:rotate(-22deg); }
+.glass .glints::after{ width:7px; height:7px; left:25px; top:2px; opacity:0.82; }
+.pad{ padding:24px 26px 26px; }
 .on-glass{ position:relative; z-index:5; }
 
-/* ══ 页头 ══ */
-.hero{ padding:26px 28px 22px; }
-.hero .kicker{ font:700 11px var(--mono); letter-spacing:2px; color:var(--muted);
-  text-transform:uppercase; }
-.hero h1{ font-size:30px; font-weight:800; letter-spacing:-.5px; margin:8px 0 6px; line-height:1.25; }
-.hero h1 em{ font-style:normal; color:var(--brand-dk); }
-.hero .sub{ font-size:13px; color:var(--muted); font-weight:600; }
-.meta{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
-.chip{ font-size:12px; font-weight:600; padding:5px 12px; border-radius:0;
-  background:#fff; border:1px solid var(--line2); color:var(--ink); }
-.chip b{ color:var(--brand-dk); font-weight:800; }
+/* 轻量玻璃（嵌套卡用） */
+.lite{
+  background:
+    linear-gradient(160deg, rgba(255,255,255,0.07) 0%, rgba(255,255,255,0.012) 42%, rgba(114,153,123,0.04) 100%),
+    rgba(255,255,255,0.03);
+  border:1px solid rgba(255,255,255,0.44);
+  border-top-color: rgba(255,255,255,0.74);
+  border-bottom-color: rgba(114,153,123,0.16);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.85), 0 4px 14px rgba(60,55,70,.08);
+  border-radius:20px; position:relative; transition:transform .22s ease, box-shadow .22s ease;
+}
+.lite:hover{ transform:translateY(-2px);
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.9), 0 12px 28px rgba(60,55,70,.15); }
 
-/* ══ 顶部 Tab 导航（瑞士编号条） ══ */
-.tabbar{ position:sticky; top:0; z-index:40; display:grid;
-  grid-template-columns:repeat(4,minmax(0,1fr)); gap:0; padding:0;
-  border-radius:0; border:1px solid var(--ink); border-bottom:2px solid var(--ink);
-  background:#fff; overflow:visible; }
-.tabbar button{ flex:none; width:100%; min-width:0; padding:11px 6px;
-  border:0; border-right:1px solid var(--line2); border-radius:0;
-  cursor:pointer; font:inherit; font-size:13px; font-weight:700; color:var(--muted);
-  background:#fff; white-space:nowrap; transition:color .15s; display:flex;
-  align-items:center; justify-content:center; gap:6px; }
-.tabbar button:last-child{ border-right:0; }
-.tabbar button:hover{ color:var(--ink); background:#fafafa; }
-.tabbar button.on{ color:var(--ink); background:#fff; box-shadow:inset 0 -3px var(--brand); }
-.tabbar .tn{ font:800 11px var(--mono); color:var(--brand); flex:0 0 auto; }
-.tabbar button.on .tn{ color:var(--brand-dk); }
-.tabbar .tmini{ display:none; }
+/* ══ 页头 ══ */
+.hero{ padding:28px 30px 24px; }
+.hero .kicker{ font-size:11px; letter-spacing:3px; color:var(--ink-soft);
+  font-weight:700; text-transform:uppercase; }
+.hero h1{ font-size:29px; font-weight:800; letter-spacing:.5px; margin:7px 0 5px; line-height:1.3; }
+.hero h1 em{ font-style:normal; color:var(--brand); }
+.hero .sub{ font-size:13.5px; color:var(--ink-soft); font-weight:600; }
+.meta{ display:flex; flex-wrap:wrap; gap:8px; margin-top:16px; }
+.chip{ font-size:12px; font-weight:600; padding:6px 13px; border-radius:999px;
+  background:rgba(255,255,255,0.30); border:1px solid rgba(255,255,255,0.55);
+  box-shadow: inset 0 1px 2px rgba(255,255,255,.75), 0 2px 8px rgba(60,55,70,.07); }
+.chip b{ color:var(--brand); font-weight:800; }
+
+/* ══ Tab 导航 ══ */
+.tabbar{ position:sticky; top:14px; z-index:40; display:flex; gap:5px; padding:5px;
+  border-radius:999px; overflow-x:auto; overflow-y:hidden; }
+.tabbar::-webkit-scrollbar{ height:0; }
+.tabbar button{ flex:1 0 auto; padding:9px 16px; border-radius:999px; border:1px solid transparent;
+  cursor:pointer; font:inherit; font-size:13px; font-weight:700; color:var(--ink-soft);
+  background:none; white-space:nowrap; transition:all .2s; display:flex; align-items:center;
+  gap:6px; justify-content:center; }
+.tabbar button:hover{ color:var(--ink); background:rgba(255,255,255,.24); }
+.tabbar button.on{ color:#fff; border-color:rgba(255,255,255,.5);
+  background:linear-gradient(135deg, rgba(114,153,123,.92), rgba(141,183,149,.82));
+  box-shadow:0 4px 14px rgba(114,153,123,.35), inset 0 1px 1px rgba(255,255,255,.4); }
+.tabbar .tn{ font-size:10.5px; font-weight:800; opacity:.75; }
+.tabbar .tmini{ display:none; }   /* 手机端的缩写标签，桌面隐藏 */
 
 /* ══ 视图切换 ══ */
 .view{ display:none; flex-direction:column; gap:18px; }
-.view.on{ display:flex; animation: fadeUp .3s ease; }
-@keyframes fadeUp{ from{ opacity:0; transform:translateY(8px);} to{ opacity:1; transform:none;} }
+.view.on{ display:flex; animation: fadeUp .35s ease; }
+@keyframes fadeUp{ from{ opacity:0; transform:translateY(9px);} to{ opacity:1; transform:none;} }
 
 /* ══ 板块标题 ══ */
 .sec-hd{ display:flex; align-items:center; gap:10px; margin-bottom:16px; }
-.sec-no{ width:26px; height:26px; flex:0 0 auto; display:grid; place-items:center;
-  font:800 13px var(--mono); color:#fff; background:var(--ink); border-radius:0; }
-.sec-hd h2{ font-size:17px; font-weight:800; letter-spacing:-.2px; }
-.sec-hd .tail{ margin-left:auto; font-size:11.5px; color:var(--muted); font-weight:600; }
+.sec-no{ width:27px; height:27px; border-radius:50%; flex:0 0 auto;
+  display:grid; place-items:center; font-size:13px; font-weight:800; color:#fff;
+  background:linear-gradient(135deg, var(--brand), var(--brand-2));
+  box-shadow:0 2px 8px rgba(114,153,123,.35), inset 0 1px 1px rgba(255,255,255,.45); }
+.sec-hd h2{ font-size:17px; font-weight:800; letter-spacing:.4px; }
+.sec-hd .tail{ margin-left:auto; font-size:11.5px; color:var(--ink-soft); font-weight:600; }
 .sub-hd{ font-size:13px; font-weight:800; color:var(--ink); margin:20px 0 10px;
   display:flex; align-items:center; gap:7px; }
+.sub-hd::before{ content:""; width:4px; height:13px; border-radius:2px;
+  background:var(--brand); flex:0 0 auto; }
 .sub-hd:first-child{ margin-top:0; }
-.sub-hd::before{ content:""; width:4px; height:13px; background:var(--brand); flex:0 0 auto; }
 
 /* ══ 天气条 ══ */
-.wstrip{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0;
-  border:1px solid var(--line2); }
-.wcard{ padding:12px 8px 11px; text-align:center; border-right:1px solid var(--line);
-  border-bottom:1px solid var(--line); }
-.wcard:nth-child(3n){ border-right:0; }
-.wcard:nth-last-child(-n+3){ border-bottom:0; }
-.wcard .wd{ font:800 10.5px var(--mono); color:var(--muted); letter-spacing:.3px; }
+.wstrip{ display:grid; grid-template-columns:repeat(6,1fr); gap:9px; }
+.wcard{ padding:12px 8px 11px; border-radius:18px; text-align:center; }
+.wcard .wd{ font-size:10.5px; font-weight:800; color:var(--ink-soft); letter-spacing:.3px; }
 .wcard .wi{ font-size:21px; margin:5px 0 2px; line-height:1; }
-.wcard .wt{ font-size:13px; font-weight:800; font-variant-numeric:tabular-nums; }
-.wcard .wt i{ font-style:normal; font-size:11px; font-weight:600; color:var(--muted); margin-left:2px; }
-.wcard .wc{ font-size:10px; color:var(--muted); font-weight:600; margin-top:2px; }
-.wcard.hot{ box-shadow:inset 0 3px var(--brand); }
-.wcard.cool{ box-shadow:inset 0 3px #9a9a9a; }
+.wcard .wt{ font-size:12.5px; font-weight:800; }
+.wcard .wt i{ font-style:normal; font-size:11px; font-weight:600; color:var(--ink-soft); margin-left:2px; }
+.wcard .wc{ font-size:10px; color:var(--ink-soft); font-weight:600; margin-top:2px; }
+.wcard.hot{ box-shadow: inset 0 1px 1px rgba(255,255,255,.85), 0 4px 14px rgba(243,180,145,.28); }
+.wcard.cool{ box-shadow: inset 0 1px 1px rgba(255,255,255,.85), 0 4px 14px rgba(145,197,174,.30); }
 
 /* ══ 表格 ══ */
-.tblwrap{ position:relative; z-index:5; overflow-x:auto; border:1px solid var(--line2);
-  border-radius:0; background:#fff; }
+.tblwrap{ position:relative; z-index:5; overflow-x:auto; border-radius:18px;
+  border:1px solid rgba(255,255,255,0.42); background:rgba(255,255,255,0.03); }
 table{ width:100%; border-collapse:collapse; font-size:13.5px; }
-thead th{ position:sticky; top:0; z-index:2; background:#f3f3f3;
-  font:700 11.5px var(--sans); color:var(--muted); letter-spacing:.3px;
-  text-align:left; padding:11px 14px; white-space:nowrap; border-bottom:1px solid var(--ink); }
+thead th{ position:sticky; top:0; z-index:2; background:rgba(255,255,255,0.5);
+  backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  font-size:11.5px; font-weight:700; color:var(--ink-soft); letter-spacing:.3px;
+  text-align:left; padding:11px 14px; white-space:nowrap;
+  border-bottom:1px solid rgba(114,153,123,.20); }
 thead th.num{ text-align:right; }
-tbody td{ padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top; }
+tbody td{ padding:11px 14px; border-bottom:1px solid rgba(114,153,123,.11); vertical-align:top; }
 tbody tr:last-child td{ border-bottom:0; }
-tbody tr{ transition:background .12s; }
-tbody tr:hover{ background:#fafafa; }
+tbody tr{ transition:background .15s; }
+tbody tr:hover{ background:rgba(255,255,255,0.16); }
 td.num{ text-align:right; font-variant-numeric:tabular-nums; font-weight:700; white-space:nowrap; }
-td .day-n{ font-weight:800; color:var(--brand-dk); white-space:nowrap; font-variant-numeric:tabular-nums; }
+td .day-n{ font-weight:800; color:var(--brand); white-space:nowrap; }
 td .rt{ font-weight:700; }
-tr.total td{ background:#f6f6f6; font-weight:800; font-size:14.5px; }
-tr.total td.num{ color:var(--brand-dk); }
+tr.total td{ background:rgba(114,153,123,.14); font-weight:800; font-size:14.5px; }
+tr.total td.num{ color:var(--terra); }
 
-/* ══ 行程串联链（总览） ══ */
+/* ══ 行程串联链（总览用，简洁） ══ */
 .chain{ position:relative; padding-left:22px; }
-.chain::before{ content:""; position:absolute; left:6px; top:14px; bottom:14px; width:2px;
-  background:var(--ink); }
+.chain::before{ content:""; position:absolute; left:6px; top:14px; bottom:14px; width:2.5px;
+  border-radius:99px; background:linear-gradient(180deg, var(--brand), var(--mint-soft), var(--peach)); }
 .chain-i{ position:relative; display:flex; align-items:center; gap:11px;
-  padding:11px 15px; margin-bottom:9px; border:1px solid var(--line2); background:#fff; }
+  padding:11px 15px; margin-bottom:9px; border-radius:999px; }
 .chain-i:last-child{ margin-bottom:0; }
 .chain-i::before{ content:""; position:absolute; left:-20.5px; top:50%; transform:translateY(-50%);
-  width:9px; height:9px; background:var(--brand); }
-.chain-i .cd{ font:800 12px var(--mono); color:#fff; background:var(--ink);
-  padding:2px 10px; flex:0 0 auto; }
-.chain-i .cr{ font-size:13.5px; font-weight:700; flex:0 1 auto; min-width:0; }
-.chain-i .cs{ font-size:12.5px; color:var(--muted); flex:1; min-width:0;
+  width:9px; height:9px; border-radius:50%; background:var(--brand);
+  box-shadow:0 0 0 4px rgba(114,153,123,.20); }
+.chain-i .cd{ font-size:12px; font-weight:800; color:#fff; background:rgba(114,153,123,.85);
+  padding:2px 10px; border-radius:999px; flex:0 0 auto;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.35); }
+.chain-i .cr{ font-size:13.5px; font-weight:700; flex:0 0 auto; }
+.chain-i .cs{ font-size:12.5px; color:var(--ink-soft); flex:1; min-width:0;
   overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+@media (max-width:640px){ .chain-i .cs{ display:none; } }
 
-/* ══ 手风琴（详细规划） ══ */
-details.acc{ border:1px solid var(--line2); border-radius:0; margin-bottom:10px; overflow:hidden; background:#fff; }
+/* ══ 手风琴（详细规划用） ══ */
+details.acc{ border-radius:20px; margin-bottom:10px; overflow:hidden; }
 details.acc:last-child{ margin-bottom:0; }
 details.acc > summary{ list-style:none; cursor:pointer; padding:14px 18px;
-  display:flex; align-items:center; gap:11px; font-weight:800; font-size:13.5px; transition:background .15s; }
+  display:flex; align-items:center; gap:11px; font-weight:800; font-size:13.5px;
+  transition:background .18s; position:relative; z-index:5; }
 details.acc > summary::-webkit-details-marker{ display:none; }
-details.acc > summary:hover{ background:#fafafa; }
-details.acc > summary .cd{ font:800 12px var(--mono); color:#fff; background:var(--ink);
-  padding:2px 10px; flex:0 0 auto; }
+details.acc > summary:hover{ background:rgba(255,255,255,.22); }
+details.acc > summary .cd{ font-size:12px; font-weight:800; color:#fff;
+  background:rgba(114,153,123,.85); padding:2px 10px; border-radius:999px; flex:0 0 auto;
+  box-shadow: inset 0 1px 1px rgba(255,255,255,.35); }
 details.acc > summary .ct{ flex:1; min-width:0; }
-details.acc > summary .ar{ font-size:11px; color:var(--muted); transition:transform .25s; flex:0 0 auto; }
+details.acc > summary .ar{ font-size:11px; color:var(--ink-soft); transition:transform .25s; flex:0 0 auto; }
 details.acc[open] > summary .ar{ transform:rotate(180deg); }
-details.acc[open] > summary{ border-bottom:1px solid var(--line); }
-.acc-body{ padding:6px 18px 16px; position:relative; z-index:5; }
+details.acc[open] > summary{ background:rgba(255,255,255,.20); }
+.acc-body{ padding:4px 18px 16px; position:relative; z-index:5; }
 .slot{ display:flex; gap:9px; font-size:13.5px; margin:9px 0; align-items:flex-start; }
-.slot .tm{ flex:0 0 auto; width:52px; font:700 11.5px var(--mono); color:var(--ink);
-  text-align:center; padding:2px 0; border:1px solid var(--line2); background:#fbfbfb; }
-.slot .tm.eve{ border-color:var(--brand); color:var(--brand-dk); }
+.slot .tm{ flex:0 0 auto; width:52px; font-size:11.5px; font-weight:800; color:#fff;
+  text-align:center; padding:2px 0; border-radius:999px; margin-top:2px;
+  background:rgba(114,153,123,.82); box-shadow:inset 0 1px 1px rgba(255,255,255,.35); }
+.slot .tm.eve{ background:rgba(214,128,103,.82); }
 .slot .tx{ flex:1; min-width:0; }
 .slot .tx b{ color:var(--ink); font-weight:700; }
-.slot .tx .hint{ color:var(--muted); font-size:12.5px; }
+.slot .tx .hint{ color:var(--ink-soft); font-size:12.5px; }
 
 /* ══ 卡片网格（住宿 / 景点 / 美食） ══ */
-.cgrid{ display:grid; gap:0; position:relative; z-index:5; }
-.cg2{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-.cg3{ grid-template-columns:repeat(3,minmax(0,1fr)); }
-/* 卡片之间用骨架线分割（瑞士网格） */
-.cg2, .cg3{ border:1px solid var(--line2); }
-.cg2 > .card, .cg3 > .card{ border:0; border-right:1px solid var(--line); border-bottom:1px solid var(--line); border-radius:0; }
-.cg3 > .card:nth-child(3n){ border-right:0; }
-.cg2 > .card:nth-child(2n){ border-right:0; }
-.cg3 > .card:nth-last-child(-n+3),
-.cg2 > .card:nth-last-child(-n+2){ border-bottom:0; }
+.cgrid{ display:grid; gap:13px; position:relative; z-index:5; }
+.cg2{ grid-template-columns:repeat(2,1fr); }
+.cg3{ grid-template-columns:repeat(3,1fr); }
+@media (max-width:820px){ .cg3{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:600px){ .cg2,.cg3{ grid-template-columns:1fr; } }
 
-.lite{ background:#fff; border:1px solid var(--line2); border-radius:0; position:relative; }
-.card{ padding:15px 17px 16px; display:flex; flex-direction:column; gap:8px; background:#fff; min-width:0; }
-.card>*{ min-width:0; }
+.card{ padding:15px 17px 16px; display:flex; flex-direction:column; gap:8px; }
 .card .ch{ display:flex; align-items:flex-start; gap:8px; }
-.card .ch>*{ min-width:0; }
 .card .cn{ font-size:14.5px; font-weight:800; line-height:1.4; flex:1; min-width:0; }
-.card .cdesc{ font-size:12.5px; color:var(--muted); line-height:1.7; overflow-wrap:anywhere; }
+.card .cdesc{ font-size:12.5px; color:var(--ink-soft); line-height:1.7; }
 .card .crow{ display:flex; flex-wrap:wrap; gap:6px; align-items:center; font-size:12px; }
 .kv{ display:flex; justify-content:space-between; gap:10px; font-size:12.5px;
-  padding:5px 0; border-bottom:1px solid var(--line); }
+  padding:5px 0; border-bottom:1px dashed rgba(114,153,123,.22); }
 .kv:last-child{ border-bottom:0; }
-.kv .kk{ color:var(--muted); font-weight:600; flex:0 0 auto; }
-.kv .kk,.kv .vv{ min-width:0; }
-.kv .vv{ font-weight:800; text-align:right; overflow-wrap:anywhere; }
-.stars{ font-size:11.5px; letter-spacing:1px; color:var(--brand-dk); font-weight:800; }
+.kv .kk{ color:var(--ink-soft); font-weight:600; flex:0 0 auto; }
+.kv .vv{ font-weight:800; text-align:right; }
+.stars{ font-size:11.5px; letter-spacing:1px; color:var(--terra); font-weight:800; }
 
-/* ══ 标签 ══ */
+/* ══ 标签 / 提示 ══ */
 .tag{ display:inline-block; font-size:11px; font-weight:700; padding:2px 9px;
-  border-radius:0; border:1px solid currentColor; white-space:normal; overflow-wrap:anywhere;
-  line-height:1.5; max-width:100%; }
-.tag.terra{ color:#9c3100; background:var(--brand-tint); border-color:var(--brand-dk); }
-.tag.brand{ color:var(--ink); border-color:var(--ink); }
-.tag.peach{ color:#666; border-color:#bbb; }
-.tag.gray{ color:#666; background:#f4f4f4; border-color:#ddd; }
-.tag.sky{ color:#555; border-color:#bbb; }
+  border-radius:999px; background:rgba(255,255,255,0.16); border:1px solid currentColor;
+  white-space:nowrap; }
+.tag.mint{ color:#5c8a5f; } .tag.peach{ color:#a8693f; }
+.tag.terra{ color:var(--terra); } .tag.gray{ color:var(--muted); }
+.tag.brand{ color:var(--brand); }
 
-/* ══ 按钮 ══ */
-.card-act{ display:flex; justify-content:flex-end; gap:7px; margin-top:2px; position:relative; z-index:5; flex-wrap:wrap; }
-.nav-btn{ display:inline-flex; align-items:center; gap:4px; flex:0 0 auto;
-  font:700 11.5px var(--sans); padding:5px 12px; border-radius:0; cursor:pointer;
-  color:var(--ink); border:1px solid var(--brand); background:var(--brand);
-  transition:background .15s; }
-.nav-btn:hover{ background:#ff753b; border-color:#ff753b; }
-.detail-btn{ font:700 11.5px var(--sans); padding:5px 12px; border-radius:0; cursor:pointer;
-  color:var(--brand-dk); background:#fff; border:1px solid var(--brand-dk); transition:background .15s; }
-.detail-btn:hover{ background:var(--brand-tint); }
-
-/* ══ 筛选 / 排序条 ══ */
-.filter-bar{ display:flex; gap:7px; overflow-x:auto; padding:3px 2px 9px; margin-bottom:4px; position:relative; z-index:5; }
-.filter-bar::-webkit-scrollbar{ height:0; }
-.filter-bar button{ flex:0 0 auto; font:700 12px var(--sans); padding:6px 14px; border-radius:0;
-  cursor:pointer; color:var(--muted); background:#fff; border:1px solid var(--line2); transition:all .15s; }
-.filter-bar button:hover{ color:var(--ink); }
-.filter-bar button.on{ color:var(--ink); border-color:var(--brand); background:var(--brand-tint); }
-.fgroup[hidden]{ display:none; }
-
-.sort-bar{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:11px; position:relative; z-index:5; }
-.sort-btn{ font:700 12px var(--sans); padding:7px 15px; border-radius:0; cursor:pointer;
-  color:var(--ink); background:#fff; border:1px solid var(--line2); transition:all .15s; }
-.sort-btn:hover{ background:#fafafa; }
-.sort-btn.on{ color:var(--ink); border-color:var(--brand); background:var(--brand-tint); }
-.sort-btn:disabled{ opacity:.5; cursor:default; }
-.sort-status{ font-size:11.5px; color:var(--muted); font-weight:600; }
-.sort-status.warn{ color:var(--brand-dk); }
-.dist-badge{ margin-right:auto; align-self:center; display:inline-flex; align-items:center; gap:4px;
-  font:800 11px var(--sans); padding:4px 10px; border-radius:0; white-space:nowrap;
-  color:#9c3100; background:var(--brand-tint); border:1px solid var(--brand-dk); }
-.dist-badge.near{ color:#9c3100; }
-.flat-grid{ margin-bottom:13px; }
-
-/* ══ 地图选择器（底部抽屉） ══ */
-.picker-mask{ position:fixed; inset:0; z-index:60; background:rgba(21,21,21,.5);
-  display:none; align-items:flex-end; justify-content:center; }
-.picker-mask.show{ display:flex; }
-.picker{ width:100%; max-width:520px; margin:0 auto; background:#fff;
-  border:1px solid var(--ink); border-bottom:0; border-radius:0;
-  border-top:3px solid var(--brand); padding:18px 18px calc(16px + env(safe-area-inset-bottom));
-  box-shadow:0 -10px 40px rgba(0,0,0,.25); animation:pkUp .22s ease-out; }
-@keyframes pkUp{ from{ transform:translateY(100%); } to{ transform:none; } }
-.pk-title{ font-size:15px; font-weight:800; text-align:center; }
-.pk-dest{ font-size:12px; color:var(--muted); text-align:center; margin:7px 0 15px; line-height:1.5; }
-.pk-btn{ display:flex; flex-direction:column; gap:1px; text-decoration:none; color:var(--ink);
-  background:#fff; border:1px solid var(--line2); border-radius:0; padding:12px 15px;
-  margin-bottom:9px; font-size:14.5px; font-weight:700; transition:background .15s; }
-.pk-btn:hover{ background:#fafafa; }
-.pk-btn small{ font-size:11px; color:var(--muted); font-weight:600; }
-.pk-copy,.pk-cancel{ width:100%; font:700 13.5px var(--sans); border-radius:0; padding:11px;
-  margin-top:4px; cursor:pointer; transition:background .15s; }
-.pk-copy{ border:1px solid var(--brand-dk); background:var(--brand-tint); color:#9c3100; }
-.pk-cancel{ border:1px solid var(--line2); background:#fff; color:var(--muted); }
-
-/* ══ 景点详情抽屉 ══ */
-.sheet-mask{ position:fixed; inset:0; z-index:70; background:rgba(21,21,21,.5);
-  display:none; align-items:flex-end; justify-content:center; }
-.sheet-mask.show{ display:flex; }
-.sheet{ width:100%; max-width:560px; margin:0 auto; display:flex; flex-direction:column;
-  max-height:86vh; border:1px solid var(--ink); border-bottom:0; border-radius:0;
-  border-top:3px solid var(--brand); padding:20px 20px calc(16px + env(safe-area-inset-bottom));
-  background:#fff; box-shadow:0 -10px 40px rgba(0,0,0,.28); animation:pkUp .22s ease-out; }
-.sh-hd{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; flex:0 0 auto; }
-.sh-name{ font-size:17px; font-weight:800; }
-#stTag{ font:700 11px var(--sans); padding:2px 9px; border:1px solid var(--brand-dk);
-  color:#9c3100; background:var(--brand-tint); }
-.sh-addr{ font-size:11.5px; color:var(--muted); margin-top:5px; font-weight:600; flex:0 0 auto; }
-.sh-body{ overflow-y:auto; margin-top:13px; flex:1; min-height:0; }
-.sh-intro{ font-size:13px; line-height:1.8; overflow-wrap:anywhere; }
-.sh-sec{ margin-top:15px; }
-.sh-lb{ font-size:12px; font-weight:800; color:var(--brand-dk); margin-bottom:7px;
-  display:flex; align-items:center; gap:6px; }
-.sh-lb::before{ content:""; width:4px; height:12px; background:var(--brand); }
-.sh-hl{ list-style:none; display:flex; flex-direction:column; gap:7px; margin:0; padding:0; }
-.sh-hl li{ font-size:12.5px; line-height:1.7; padding-left:16px; position:relative; }
-.sh-hl li::before{ content:""; position:absolute; left:3px; top:8px; width:6px; height:6px;
-  background:var(--brand); }
-.sh-grid{ display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:0; margin-top:15px;
-  border:1px solid var(--line2); }
-.sh-cell{ padding:9px 11px; border-right:1px solid var(--line); text-align:center; }
-.sh-cell:last-child{ border-right:0; }
-.sh-k{ font-size:10.5px; color:var(--muted); font-weight:700; }
-.sh-v{ font-size:12.5px; font-weight:800; margin-top:2px; }
-.sh-tip{ font-size:12.5px; line-height:1.75; padding:11px 14px; border-radius:0; margin-top:15px;
-  background:var(--brand-tint); border:1px solid var(--brand-dk); color:#7a2e00; font-weight:600; }
-.sh-src{ font-size:10.5px; color:var(--muted); margin-top:10px; line-height:1.6; }
-.sh-act{ display:flex; gap:9px; margin-top:15px; flex:0 0 auto; }
-.sh-act .pk-copy{ flex:1; margin-top:0; }
-.sh-act .nav-btn{ flex:1; justify-content:center; }
-
-/* ══ 美食「推荐菜」折叠 ══ */
-.dish{ margin-top:9px; border:1px solid var(--line2); border-radius:0; background:#fff; overflow:hidden; }
-.dish > summary{ list-style:none; cursor:pointer; padding:9px 12px; display:flex;
-  align-items:center; gap:8px; font-size:11.5px; font-weight:800; color:var(--brand-dk); }
-.dish > summary::-webkit-details-marker{ display:none; }
-.dish > summary .d-lb{ flex:0 0 auto; }
-.dish > summary .d-inline{ font-size:11.5px; font-weight:600; color:var(--muted);
-  flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-.dish[open] > summary .d-inline{ display:none; }
-.dish > summary .d-ar{ font-size:10px; color:var(--muted); transition:transform .2s; flex:0 0 auto; }
-.dish[open] > summary .d-ar{ transform:rotate(180deg); }
-.d-list{ list-style:none; padding:0 12px 10px; display:flex; flex-direction:column; gap:6px; margin:0; }
-.d-list li{ font-size:12px; line-height:1.65; padding-left:15px; position:relative; }
-.d-list li::before{ content:""; position:absolute; left:2px; top:7px; width:5px; height:5px;
-  background:var(--brand); }
-.d-tip{ font-size:11.5px; line-height:1.7; padding:9px 12px 11px; color:#7a2e00;
-  border-top:1px dashed var(--line); font-weight:600; overflow-wrap:anywhere; }
-
-/* ══ 提示 / 注意事项 ══ */
-.note{ font-size:13px; padding:11px 15px; border-radius:0; margin-top:11px;
-  background:var(--brand-tint); border:1px solid var(--brand-dk); border-left:4px solid var(--brand-dk);
-  color:#7a2e00; font-weight:600; position:relative; z-index:5; overflow-wrap:anywhere; }
-.tip{ font-size:13px; padding:11px 15px; border-radius:0; margin-top:11px;
-  background:#f6f6f6; border:1px solid var(--line2); border-left:4px solid var(--ink);
-  color:var(--ink); font-weight:600; position:relative; z-index:5; overflow-wrap:anywhere; }
+.note{ font-size:13px; padding:11px 15px; border-radius:16px; margin-top:11px;
+  background:rgba(214,128,103,.14); border:1px solid rgba(214,128,103,.34);
+  color:#8a4a2c; font-weight:600; position:relative; z-index:5; }
+.tip{ font-size:13px; padding:11px 15px; border-radius:16px; margin-top:11px;
+  background:rgba(206,231,199,.34); border:1px solid rgba(145,197,174,.5);
+  color:#3f5c46; font-weight:600; position:relative; z-index:5; }
 .tip b,.note b{ font-weight:800; }
 
-ul.plain{ list-style:none; display:flex; flex-direction:column; gap:9px; position:relative; z-index:5; margin:0; padding:0; }
+ul.plain{ list-style:none; display:flex; flex-direction:column; gap:9px; position:relative; z-index:5; }
 ul.plain li{ font-size:13.5px; padding-left:20px; position:relative; }
-ul.plain li::before{ content:""; position:absolute; left:4px; top:9px;
-  width:7px; height:7px; background:var(--brand); }
+ul.plain li::before{ content:""; position:absolute; left:4px; top:10px;
+  width:7px; height:7px; border-radius:50%;
+  background:var(--brand); box-shadow:0 0 0 3px rgba(114,153,123,.18); }
 ul.plain li b{ font-weight:800; }
 
-footer{ text-align:center; font-size:11.5px; color:var(--muted);
-  padding:6px 0 0; line-height:1.9; border-top:1px solid var(--line2); margin-top:8px; }
+footer{ text-align:center; font-size:11.5px; color:rgba(28,38,33,.45);
+  padding:6px 0 0; line-height:1.9; }
 
-/* ═══════════════════════════════════════════════════════════
-   移动端适配加固（沿用原版逻辑，仅换配色 / 去圆角）
-   ═══════════════════════════════════════════════════════════ */
-.cgrid.cg2{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-.cgrid.cg3{ grid-template-columns:repeat(3,minmax(0,1fr)); }
-.cgrid>*{ min-width:0; }
-.card{ min-width:0; }
-.card>*{ min-width:0; }
-.card .ch>*{ min-width:0; }
-.hero h1,.sec-hd h2,.cdesc,.sh-intro,.sh-tip{ overflow-wrap:anywhere; }
-
-@media (max-width:820px){
-  .cgrid.cg3{ grid-template-columns:repeat(2,minmax(0,1fr)); }
-  .cg3 > .card:nth-child(3n){ border-right:1px solid var(--line); }
-  .cg3 > .card:nth-child(2n){ border-right:0; }
-  .cg3 > .card:nth-last-child(-n+3){ border-bottom:1px solid var(--line); }
-  .cg3 > .card:nth-last-child(-n+2){ border-bottom:0; }
-}
-@media (max-width:600px){
-  .cgrid.cg2,.cgrid.cg3{ grid-template-columns:minmax(0,1fr); }
-  .cg2 > .card, .cg3 > .card{ border-right:0 !important; }
-  .cg2 > .card:nth-last-child(-n+2),
-  .cg3 > .card:nth-last-child(-n+2){ border-bottom:1px solid var(--line); }
-  .cg2 > .card:last-child, .cg3 > .card:last-child{ border-bottom:0; }
-  .wstrip{ grid-template-columns:repeat(3,minmax(0,1fr)); }
-  .sh-grid{ grid-template-columns:repeat(3,minmax(0,1fr)); }
-}
+/* ══ 响应式 ══ */
+@media (max-width:820px){ .wstrip{ grid-template-columns:repeat(3,1fr); } }
 @media (max-width:640px){
   .wrap{ padding:18px 14px 44px; gap:15px; }
   .pad{ padding:19px 17px 21px; }
   .hero{ padding:23px 20px 21px; }
-  .hero h1{ font-size:23px; }
-  .tabbar{ top:0; }
-  .tabbar button{ padding:10px 3px; font-size:12px; gap:3px; }
-  .tabbar .tl{ display:none; }
-  .tabbar .tmini{ display:inline; }
-  .tabbar .tn{ font-size:10px; }
+  .hero h1{ font-size:22px; }
+  .tabbar{ top:8px; }
+  .tabbar button{ padding:8px 12px; font-size:12.5px; }
   .slot{ flex-direction:column; gap:4px; }
   .slot .tm{ width:auto; padding:2px 11px; }
   table{ font-size:12.5px; }
   thead th,tbody td{ padding:9px 10px; }
-  /* 推荐菜预览：窄屏独占一行拿整行宽度 */
+}
+@media (prefers-reduced-motion: reduce){ *{ animation:none!important; transition:none!important; } }
+
+/* ═══ 卡片操作区 + 导航按钮 ═══ */
+.card-act{ display:flex; justify-content:flex-end; gap:7px; margin-top:2px; position:relative; z-index:5; }
+.nav-btn{ display:inline-flex; align-items:center; gap:4px; flex:0 0 auto;
+  font:inherit; font-size:11.5px; font-weight:700; padding:5px 12px; border-radius:999px;
+  cursor:pointer; color:#fff; border:1px solid rgba(255,255,255,0.5);
+  background:linear-gradient(135deg, rgba(114,153,123,0.92), rgba(141,183,149,0.82));
+  box-shadow:0 3px 10px rgba(114,153,123,0.28), inset 0 1px 1px rgba(255,255,255,0.4);
+  transition:transform .18s, box-shadow .18s; }
+.nav-btn:hover{ transform:translateY(-1px); box-shadow:0 6px 16px rgba(114,153,123,0.38), inset 0 1px 1px rgba(255,255,255,0.45); }
+.nav-btn:active{ transform:translateY(0); }
+
+/* ═══ 筛选条 ═══ */
+.filter-bar{ display:flex; gap:7px; overflow-x:auto; padding:3px 2px 9px; margin-bottom:4px;
+  position:relative; z-index:5; }
+.filter-bar::-webkit-scrollbar{ height:0; }
+.filter-bar button{ flex:0 0 auto; font:inherit; font-size:12px; font-weight:700;
+  padding:6px 14px; border-radius:999px; cursor:pointer; color:var(--ink-soft);
+  background:rgba(255,255,255,0.22); border:1px solid rgba(255,255,255,0.5);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,0.7); transition:all .18s; }
+.filter-bar button:hover{ color:var(--ink); background:rgba(255,255,255,0.42); }
+.filter-bar button.on{ color:#fff; border-color:rgba(255,255,255,0.5);
+  background:linear-gradient(135deg, rgba(114,153,123,0.92), rgba(141,183,149,0.82));
+  box-shadow:0 3px 10px rgba(114,153,123,0.3), inset 0 1px 1px rgba(255,255,255,0.4); }
+.fgroup[hidden]{ display:none; }
+
+/* ═══ 地图选择器（底部抽屉） ═══ */
+.picker-mask{ position:fixed; inset:0; z-index:60; background:rgba(28,38,33,0.42);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  display:none; align-items:flex-end; justify-content:center; }
+.picker-mask.show{ display:flex; }
+.picker{ width:100%; max-width:520px; margin:0 auto;
+  background:linear-gradient(160deg, rgba(255,255,255,0.94), rgba(244,248,244,0.9));
+  backdrop-filter:blur(26px) saturate(200%); -webkit-backdrop-filter:blur(26px) saturate(200%);
+  border:1px solid rgba(255,255,255,0.75); border-bottom:0;
+  border-radius:26px 26px 0 0; padding:18px 18px calc(16px + env(safe-area-inset-bottom));
+  box-shadow:0 -8px 40px rgba(60,55,70,0.25); animation:pkUp .22s ease-out; }
+@keyframes pkUp{ from{ transform:translateY(100%); } to{ transform:none; } }
+.pk-title{ font-size:15px; font-weight:800; text-align:center; }
+.pk-dest{ font-size:12px; color:var(--ink-soft); text-align:center; margin:7px 0 15px; line-height:1.5; }
+.pk-btn{ display:flex; flex-direction:column; gap:1px; text-decoration:none; color:var(--ink);
+  background:rgba(255,255,255,0.62); border:1px solid rgba(255,255,255,0.85);
+  border-radius:16px; padding:12px 15px; margin-bottom:9px; font-size:14.5px; font-weight:700;
+  box-shadow:0 3px 10px rgba(60,55,70,0.07); transition:all .18s; }
+.pk-btn:hover{ background:rgba(255,255,255,0.9); transform:translateY(-1px); }
+.pk-btn small{ font-size:11px; color:var(--ink-soft); font-weight:600; }
+.pk-copy,.pk-cancel{ width:100%; font:inherit; font-size:13.5px; font-weight:700;
+  border-radius:999px; padding:11px; margin-top:4px; cursor:pointer;
+  transition:transform .18s, background .18s; }
+.pk-copy{ border:1px solid rgba(114,153,123,0.42); background:rgba(206,231,199,0.42); color:#3f5c46; }
+.pk-cancel{ border:1px solid rgba(255,255,255,0.65); background:rgba(255,255,255,0.45); color:var(--ink-soft); }
+.pk-copy:hover,.pk-cancel:hover{ transform:translateY(-1px); }
+@media (prefers-reduced-motion: reduce){ .picker{ animation:none; } }
+
+
+
+/* ═══ 距离排序 ═══ */
+.sort-bar{ display:flex; align-items:center; gap:9px; flex-wrap:wrap;
+  margin-bottom:11px; position:relative; z-index:5; }
+.sort-btn{ font:inherit; font-size:12px; font-weight:700; padding:7px 15px; border-radius:999px;
+  cursor:pointer; color:var(--ink); background:rgba(255,255,255,0.3);
+  border:1px solid rgba(255,255,255,0.6);
+  box-shadow:inset 0 1px 2px rgba(255,255,255,0.75), 0 2px 8px rgba(60,55,70,0.07);
+  transition:all .18s; }
+.sort-btn:hover{ background:rgba(255,255,255,0.5); transform:translateY(-1px); }
+.sort-btn.on{ color:#fff; border-color:rgba(255,255,255,0.5);
+  background:linear-gradient(135deg, rgba(214,128,103,0.92), rgba(243,180,145,0.82));
+  box-shadow:0 3px 12px rgba(214,128,103,0.32), inset 0 1px 1px rgba(255,255,255,0.4); }
+.sort-btn:disabled{ opacity:.5; cursor:default; transform:none; }
+.sort-status{ font-size:11.5px; color:var(--ink-soft); font-weight:600; }
+.sort-status.warn{ color:#8a4a2c; }
+.dist-badge{ margin-right:auto; align-self:center; display:inline-flex; align-items:center; gap:4px;
+  font-size:11px; font-weight:800; padding:4px 10px; border-radius:999px; white-space:nowrap;
+  color:#8a4a2c; background:rgba(243,180,145,0.34); border:1px solid rgba(214,128,103,0.4);
+  box-shadow:inset 0 1px 1px rgba(255,255,255,0.6); }
+.dist-badge.near{ color:#3f5c46; background:rgba(206,231,199,0.5); border-color:rgba(145,197,174,0.6); }
+.flat-grid{ margin-bottom:13px; }
+
+/* ═══ 景点详情抽屉 ═══ */
+.detail-btn{ font:inherit; font-size:11.5px; font-weight:700; padding:5px 12px; border-radius:999px;
+  cursor:pointer; color:var(--brand); background:rgba(206,231,199,0.42);
+  border:1px solid rgba(145,197,174,0.55); transition:all .18s; }
+.detail-btn:hover{ background:rgba(206,231,199,0.75); transform:translateY(-1px); }
+.sheet-mask{ position:fixed; inset:0; z-index:70; background:rgba(28,38,33,0.45);
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  display:none; align-items:flex-end; justify-content:center; }
+.sheet-mask.show{ display:flex; }
+.sheet{ width:100%; max-width:560px; margin:0 auto; display:flex; flex-direction:column;
+  max-height:86vh; border-radius:26px 26px 0 0; border:1px solid rgba(255,255,255,0.75);
+  border-bottom:0; padding:20px 20px calc(16px + env(safe-area-inset-bottom));
+  background:linear-gradient(160deg, rgba(255,255,255,0.95), rgba(244,248,244,0.92));
+  backdrop-filter:blur(26px) saturate(200%); -webkit-backdrop-filter:blur(26px) saturate(200%);
+  box-shadow:0 -8px 40px rgba(60,55,70,0.28); animation:pkUp .22s ease-out; }
+.sh-hd{ display:flex; align-items:center; gap:9px; flex-wrap:wrap; flex:0 0 auto; }
+.sh-name{ font-size:17px; font-weight:800; }
+.sh-addr{ font-size:11.5px; color:var(--ink-soft); margin-top:5px; font-weight:600; flex:0 0 auto; }
+.sh-body{ overflow-y:auto; margin-top:13px; flex:1; min-height:0; }
+.sh-intro{ font-size:13px; line-height:1.8; }
+.sh-sec{ margin-top:15px; }
+.sh-lb{ font-size:12px; font-weight:800; color:var(--brand); margin-bottom:7px;
+  display:flex; align-items:center; gap:6px; }
+.sh-lb::before{ content:""; width:4px; height:12px; border-radius:2px; background:var(--brand); }
+.sh-hl{ list-style:none; display:flex; flex-direction:column; gap:7px; }
+.sh-hl li{ font-size:12.5px; line-height:1.7; padding-left:16px; position:relative; }
+.sh-hl li::before{ content:""; position:absolute; left:3px; top:8px; width:6px; height:6px;
+  border-radius:50%; background:var(--brand-2); }
+.sh-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:9px; margin-top:15px; }
+.sh-cell{ padding:9px 11px; border-radius:14px; background:rgba(255,255,255,0.55);
+  border:1px solid rgba(255,255,255,0.85); text-align:center; }
+.sh-k{ font-size:10.5px; color:var(--ink-soft); font-weight:700; }
+.sh-v{ font-size:12.5px; font-weight:800; margin-top:2px; }
+.sh-tip{ font-size:12.5px; line-height:1.75; padding:11px 14px; border-radius:14px; margin-top:15px;
+  background:rgba(206,231,199,0.4); border:1px solid rgba(145,197,174,0.5); color:#3f5c46; font-weight:600; }
+.sh-src{ font-size:10.5px; color:var(--ink-soft); margin-top:10px; line-height:1.6; }
+.sh-act{ display:flex; gap:9px; margin-top:15px; flex:0 0 auto; }
+.sh-act .pk-copy{ flex:1; margin-top:0; }
+.sh-act .nav-btn{ flex:1; justify-content:center; }
+
+/* ═══ 美食「推荐菜」折叠 ═══ */
+.dish{ margin-top:9px; border-radius:14px; background:rgba(255,255,255,0.4);
+  border:1px solid rgba(255,255,255,0.78); overflow:hidden; }
+.dish > summary{ list-style:none; cursor:pointer; padding:9px 12px; display:flex;
+  align-items:center; gap:8px; font-size:11.5px; font-weight:800; color:var(--brand); }
+.dish > summary::-webkit-details-marker{ display:none; }
+.dish > summary .d-lb{ flex:0 0 auto; }
+.dish > summary .d-inline{ font-size:11.5px; font-weight:600; color:var(--ink-soft);
+  flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.dish[open] > summary .d-inline{ display:none; }
+.dish > summary .d-ar{ font-size:10px; color:var(--ink-soft); transition:transform .2s; flex:0 0 auto; }
+.dish[open] > summary .d-ar{ transform:rotate(180deg); }
+.d-list{ list-style:none; padding:0 12px 10px; display:flex; flex-direction:column; gap:6px; }
+.d-list li{ font-size:12px; line-height:1.65; padding-left:15px; position:relative; }
+.d-list li::before{ content:""; position:absolute; left:2px; top:7px; width:5px; height:5px;
+  border-radius:50%; background:var(--brand-2); }
+.d-tip{ font-size:11.5px; line-height:1.7; padding:9px 12px 11px; color:#8a4a2c;
+  border-top:1px dashed rgba(114,153,123,0.25); font-weight:600; }
+
+/* __FEATURE_CSS__ */
+/* ═══════════════════════════════════════════════════════════
+   移动端适配加固
+   ═══════════════════════════════════════════════════════════
+   ① 网格轨道防撑爆（最重要）
+      `grid-template-columns:1fr` 实为 `minmax(auto,1fr)`，其 auto 下限 =
+      条目 min-content 宽度。卡片内 `.d-inline` 是 white-space:nowrap 的长
+      文本，min-content 约 352px，会把整条轨道顶爆到 454px（容器只有 296px）。
+      外层 `.glass{overflow:hidden}` 一裁 → 卡片右侧内容（如「人均 ¥25」的
+      值）被裁掉且不可见、不可滚。改用 minmax(0,1fr) + 子项 min-width:0。
+   ② tab 栏手机端 4 等分，不再横向滚动、不再切掉第 4 个
+   ③ 筛选栏手机端换行成 4 列网格，8 个按钮全部可见
+   注意：本块必须在整个 <style> 的最末，否则会被后面的同名规则覆盖。
+   ═══════════════════════════════════════════════════════════ */
+
+/* ① 网格 / flex 最小宽度 */
+.cgrid.cg2{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+.cgrid.cg3{ grid-template-columns:repeat(3,minmax(0,1fr)); }
+@media (max-width:820px){ .cgrid.cg3{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:600px){ .cgrid.cg2,.cgrid.cg3{ grid-template-columns:minmax(0,1fr); } }
+.cgrid>*{ min-width:0; }
+.card{ min-width:0; }
+.card>*{ min-width:0; }
+.card .ch>*{ min-width:0; }
+.card summary>*{ min-width:0; }
+.kv .kk,.kv .vv{ min-width:0; }
+.kv .vv{ overflow-wrap:anywhere; }
+.wcard,.day,.chain-i,.slot,.sub-hd{ min-width:0; }
+.hero h1,.sec-hd h2,.cdesc,.sh-intro,.sh-tip{ overflow-wrap:anywhere; }
+
+/* ④ 标签内长文本不再撑破（原 white-space:nowrap 会让超长标签直接冲出卡片） */
+.tag{ max-width:100%; white-space:normal; overflow-wrap:anywhere; }
+
+/* ⑤ 行程串联链：`.cr` 原为 flex:0 0 auto 不可收缩，
+     「深圳光明城站 → 泉州站 → 西街」在窄屏会冲出视口（实测 right 321 > 305） */
+.chain-i .cr{ flex:0 1 auto; min-width:0; overflow-wrap:anywhere; }
+
+@media (max-width:640px){
+  /* ② tab 栏：4 等分，四项全可见 */
+  .tabbar{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:4px;
+           overflow:visible; padding:4px; top:8px; }
+  .tabbar button{ flex:none; min-width:0; width:100%; padding:8px 3px; font-size:12px;
+                  gap:3px; white-space:nowrap; }
+  .tabbar .tl{ display:none; }
+  .tabbar .tmini{ display:inline; }
+  .tabbar .tn{ font-size:10px; }
+
+  /* ⑥ 推荐菜预览：窄屏会被「推荐菜 N 道 ▼」挤到只剩 75px（约 5 字），
+     改为独占一行，拿到整行宽度 */
   .dish > summary{ flex-wrap:wrap; row-gap:4px; }
   .dish > summary .d-inline{ order:9; flex:1 0 100%; min-width:0; }
-  /* 筛选栏：换行成 4 列网格，全部可见 */
-  .filter-bar{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px;
-    overflow:visible; padding:2px 2px 8px; }
-  .filter-bar button{ width:100%; min-width:0; padding:7px 2px; font-size:11.5px; white-space:nowrap; }
-}
-@media (prefers-reduced-motion: reduce){ *,*::before,*::after{ animation:none!important; transition:none!important; scroll-behavior:auto!important; } }
 
+  /* ③ 筛选栏：换行成 4 列网格，全部可见 */
+  .filter-bar{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:6px;
+               overflow:visible; padding:2px 2px 8px; }
+  .filter-bar button{ width:100%; min-width:0; padding:7px 2px; font-size:11.5px;
+                      white-space:nowrap; }
+}
 </style>
 </head>
 <body data-datum="gcj02">
@@ -628,7 +733,7 @@ footer{ text-align:center; font-size:11.5px; color:var(--muted);
       <div class="glints"></div>
       <div class="on-glass">
         <div class="sec-hd"><span class="sec-no">3</span><h2>景点介绍</h2>
-          <span class="tail">共 10 处 · 含红黑榜</span></div>
+          <span class="tail">共 12 处 · 含红黑榜</span></div>
         <div class="sort-bar">
           <button class="sort-btn" id="sortSpots" type="button">📍 按距离排序</button>
           <span class="sort-status" id="sortStatusSpots"></span>
@@ -742,6 +847,32 @@ footer{ text-align:center; font-size:11.5px; color:var(--muted);
               <button class="detail-btn" type="button" data-i="8">详细介绍 ›</button>
               <button class="nav-btn" type="button"
                 data-name="洛阳桥" data-dest="洛阳桥 泉州市洛江区万安街道洛阳桥">📍 导航</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="sub-hd">✨ 体验 · 2</div>
+        <div class="cgrid cg3">
+          <div class="lite card" data-lat="24.912943" data-lng="118.583912">
+            <div class="ch"><span class="cn">不凡鲜花园艺</span><span class="tag brand">体验</span></div>
+            <div class="crow"><span class="tag gray">鲤城区新华北路148号</span></div>
+            <div class="crow"><span class="tag sky">30–45 分钟 · 免费逛</span></div>
+            <div class="cdesc">新华北路上的鲜花绿植店，挑一束当季花带回民宿，顺路歇脚；离西街、西湖公园都不远。</div>
+            <div class="card-act">
+              <button class="detail-btn" type="button" data-i="10">详细介绍 ›</button>
+              <button class="nav-btn" type="button"
+                data-name="不凡鲜花园艺" data-dest="不凡鲜花园艺 泉州市鲤城区新华北路148号">📍 导航</button>
+            </div>
+          </div>
+          <div class="lite card" data-lat="24.905165" data-lng="118.589148">
+            <div class="ch"><span class="cn">双囍簪花化妆摄影体验馆</span><span class="tag brand">体验</span></div>
+            <div class="crow"><span class="tag gray">鲤城区泮宫内12号</span></div>
+            <div class="crow"><span class="tag sky">1–2 小时 · 簪花+服装约 40 元起</span></div>
+            <div class="cdesc">府文庙旁的簪花围妆造店，衣服款式多，可簪花+化妆+摄影一条龙；妆造完去文庙、金鱼巷、西街拍最好看。</div>
+            <div class="card-act">
+              <button class="detail-btn" type="button" data-i="11">详细介绍 ›</button>
+              <button class="nav-btn" type="button"
+                data-name="双囍簪花化妆摄影体验馆" data-dest="双囍簪花化妆摄影体验馆 泉州市鲤城区泮宫内12号">📍 导航</button>
             </div>
           </div>
         </div>
@@ -1458,7 +1589,7 @@ footer{ text-align:center; font-size:11.5px; color:var(--muted);
   });
 })();
 
-window.__SIGHTS = [{"name":"开元寺","address":"泉州市鲤城区西街176号","tag":"必去","reason":"东西塔震撼、古船馆宋代沉船别错过；节假日红墙拍照人多，想安静要早到。","intro":"始建于唐垂拱二年（686 年），福建规模最大的佛教寺院，世界文化遗产，有「闽南第一古刹」之称。寺内古榕蔽日，东西双塔历经千年风雨依然矗立。","highlights":["东西塔（镇国塔、仁寿塔）——中国现存最高的宋代石塔，泉州城市地标","大雄宝殿 24 尊飞天乐伎浮雕","甘露戒坛（佛教艺术瑰宝）","千年古桑、印度教石柱遗存","古船馆·宋代沉船（别错过）"],"hours":"6:30–17:30","ticket":"免费","duration":"1–2 小时","stip":"语料原话「红墙、古榕、石塔，穿浅色衣服更出片」「节假日红墙拍照人多，想安静要早到」。笔记提示有 17:00 前后就闭园的情况，别踩着点去。","ssrc":"语料 note_02/note_28 + 携程/去哪儿/头条多源核实"},{"name":"承天寺","address":"泉州市鲤城区南俊路84号","tag":"必去","reason":"比开元寺清静很多，藏在闹市，大榕树遮天蔽日。","intro":"藏在闹市里的清幽禅院，人少安静、绿树成荫。笔记原话「我最喜欢的一个寺庙，闹中取静，绿树成荫心情舒畅」。","highlights":["遮天蔽日的大榕树","放生池与闽南园林式寺院格局","闹市中的静谧氛围（比开元寺清静太多）"],"hours":"约 8:00–17:00（未获官方确认，出行前复核）","ticket":"免费（古城寺庙多为免费，以现场为准）","duration":"30–45 分钟","stip":"适合走累了来放空。旁边有巴浪鱼咖啡馆（承天寺店），两层老屋改造、冷萃口碑好，可歇脚。","ssrc":"语料 note_28 + 联网核实"},{"name":"关岳庙","address":"泉州市鲤城区涂门街186-196号","tag":"必去","reason":"香火旺、建筑漂亮、剪瓷雕夜景美，感受热烈的世俗信仰。","intro":"通淮关岳庙，供奉关羽与岳飞双圣，福建现存规模最大、香火最盛的武庙，闽南民间信仰中心，有「闽南雕刻艺术博物馆」之誉。","highlights":["屋顶剪瓷雕，极其华丽（记得抬头看）","大殿龙柱与门神彩绘","入夜灯光下的庙宇夜景"],"hours":"6:00–18:00","ticket":"免费","duration":"1 小时","stip":"语料原话「香火最旺，听说求事业财运最灵」。参拜有讲究：先门外拜天公 → 关羽的赤兔马 → 岳飞的雪青骐骥 → 最后武成殿主祭关圣。傍晚去连夜景一起看。","ssrc":"语料 note_28 + 携程/头条核实"},{"name":"西街","address":"泉州市鲤城区西街","tag":"顺路逛","reason":"泉州最有名的老街，但主街小吃重复；建议拐进旁边小巷子找吃的。","intro":"全长约 1700 米，东起钟楼、西至城西路，是泉州现存最古老的街道，保留大量闽南红砖古厝、骑楼与番仔楼，有「泉州古城活化石」之称。","highlights":["钟楼（十字路口地标，随手拍都出片）","莓超疯天台：双塔 + 落日，必拍","主街之外的小巷：象峰巷、金鱼巷、裴巷","一路吃过去：润饼菜、面线糊、醋肉、四果汤"],"hours":"全天开放，店铺多为 9:00–22:00","ticket":"免费","duration":"2–3 小时","stip":"⚠️ 语料原话「西街主街小吃重复且偏游客，拐进旁边小巷子找吃的更地道」。傍晚从天台往西拍双塔剪影效果最好；白天步行，傍晚可骑共享车。","ssrc":"语料 note_02/note_16 + 携程/去哪儿核实"},{"name":"中山路","address":"泉州市鲤城区中山路","tag":"顺路逛","reason":"闽南骑楼老街，适合边走边吃，夜间也很美。","intro":"闽南骑楼老街，南洋风情，老字号云集。语料原话「骑楼 + 老铺，适合扫街」，是边走边吃的一条线。","highlights":["连绵骑楼建筑群","金鱼巷（值得拐进去）","老字号店铺与夜间霓虹"],"hours":"全天开放，店铺多为 9:00–22:00","ticket":"免费","duration":"1–2 小时","stip":"从钟楼往南走接中山南路，夜里的骑楼比白天更有味道。语料里有人专门推荐「晚上去中山路美食街，面线糊 + 海蛎煎 + 润饼菜」。","ssrc":"语料 note_20/note_06 + 评论 + 联网核实"},{"name":"天后宫","address":"泉州市鲤城区南门天后路","tag":"顺路去","reason":"福建最大妈祖庙，闽南民俗文化浓厚，二三十分钟可逛完。","intro":"始建于南宋庆元二年（1196 年），中国现存规模最大、规格最高的妈祖庙，郑和下西洋前均在此祭拜，是闽南人航海贸易的精神地标。","highlights":["牌楼式山门、古戏台、拜庭","天后殿金身妈祖神像","石雕里的船锚、海浪纹等海洋元素","对面的德济门遗址（顺路）"],"hours":"约 7:00–18:00（各源 7:30–17:30 也有，以现场为准）","ticket":"免费","duration":"1 小时","stip":"出来就是秉正堂石花膏（天后路总店），逛完直接吃四果汤。农历三月廿三妈祖诞辰前后有庙会。","ssrc":"语料 note_28 + 携程/去哪儿核实"},{"name":"清净寺","address":"泉州市鲤城区涂门街108-110号","tag":"注意穿着","reason":"伊斯兰古寺、异域风情；勿穿短裤短裙拖鞋。","intro":"又称艾苏哈卜大清真寺，中国现存最古老的伊斯兰教寺，宋元时期阿拉伯商人的宗教圣地，海丝路上多元文化共存的见证，有「世界宗教建筑的一朵奇花」之誉。","highlights":["门楼：阿拉伯文浮雕与几何图案","奉天坛遗址","阿拉伯文碑刻","明善堂：闽南风格与伊斯兰元素混搭"],"hours":"约 9:00–17:15（各源 7:30–17:45 均有，以现场为准）","ticket":"3 元","duration":"1 小时","stip":"⚠️ 穿着硬要求：女性需及膝长裤/长裙，男性不可袒胸露背，短裤、短裙、拖鞋都不行。隔壁就是斯丹姜母鸭涂门街总店，可连着吃。","ssrc":"语料（穿着要求）+ 携程/去哪儿/头条核实"},{"name":"五店市传统街区","address":"泉州市晋江市梅岭街道五店市","tag":"备选","reason":"闽南红砖古厝建筑群，适合拍照打卡；距古城约 30 分钟车程。","intro":"位于晋江老城区青阳核心，占地 126 亩、特色建筑 132 栋，是一片有 1300 多年历史的红砖古厝建筑群。百亩闽南古厝与摩天玻璃幕墙隔街相望，随手一拍就是半部闽南建筑史。","highlights":["蔡氏家庙：千年宗祠，红墙黛瓦挂满状元匾额","庄氏家庙：与蔡氏齐名的闽南宗祠典范","柳青新宅：民国华侨豪宅改造的「最美星巴克」","雁塔：五店市标志性地标","涴然别墅：中西合璧的民国洋楼"],"hours":"全天开放（24 小时）","ticket":"街区免费；民俗馆、岁时节庆馆需另购票","duration":"3–4 小时（半日）","stip":"距古城约 30 分钟车程，适合「想拍照」那天专门去。公交晋江 11/17/18/22 路到「五店市站」步行 2 分钟。行程里它与「古城补漏」是二选一。","ssrc":"携程攻略 + 福建省文旅厅（fjta.com）核实；语料 0 提及"},{"name":"洛阳桥","address":"泉州市洛江区万安街道洛阳桥","tag":"备选","reason":"国内四大古桥之一，退潮可看桥墩牡蛎；距古城较远。","intro":"又名万安桥，北宋皇祐五年始建、历时六年建成，中国现存最古老的跨海梁式石桥，中国古代四大名桥之一，有「海内第一桥」之誉。泉州谚语：「站着像东西塔，躺着像洛阳桥」。","highlights":["桥上石雕","「种蛎固基」——古人用牡蛎加固桥基的生物工程智慧","红树林与白鹭，日落时分极美"],"hours":"全天开放","ticket":"免费","duration":"1 小时","stip":"清晨或傍晚光线最柔和；退潮时能更清楚地看到桥墩上的牡蛎。在洛江区，离古城较远，建议专门安排半天。","ssrc":"携程/头条核实 + 语料（行程备选）"},{"name":"洛伽寺","tag":"不推荐","reason":"远看壮观，实际可逛的不多，周边配套和交通一般。","intro":"石狮的海上寺庙，涨潮时整座庙像浮在海面上，看日落一绝——这也是它在小红书上最出圈的原因。","highlights":["海上寺庙的视觉奇观（涨潮时）","日落"],"hours":"全天（具体以现场为准）","ticket":"免费（以现场为准）","duration":"1–2 小时","stip":"⚠️ 本项目语料把它列进「不推荐」：远看壮观，实际可逛的不多，周边配套和交通一般。除非专门去看日落，否则不建议为它花半天。","ssrc":"语料（红黑榜 OCR 结论）+ 头条核实"}];
+window.__SIGHTS = [{"name":"开元寺","address":"泉州市鲤城区西街176号","tag":"必去","reason":"东西塔震撼、古船馆宋代沉船别错过；节假日红墙拍照人多，想安静要早到。","intro":"始建于唐垂拱二年（686 年），福建规模最大的佛教寺院，世界文化遗产，有「闽南第一古刹」之称。寺内古榕蔽日，东西双塔历经千年风雨依然矗立。","highlights":["东西塔（镇国塔、仁寿塔）——中国现存最高的宋代石塔，泉州城市地标","大雄宝殿 24 尊飞天乐伎浮雕","甘露戒坛（佛教艺术瑰宝）","千年古桑、印度教石柱遗存","古船馆·宋代沉船（别错过）"],"hours":"6:30–17:30","ticket":"免费","duration":"1–2 小时","stip":"语料原话「红墙、古榕、石塔，穿浅色衣服更出片」「节假日红墙拍照人多，想安静要早到」。笔记提示有 17:00 前后就闭园的情况，别踩着点去。","ssrc":"语料 note_02/note_28 + 携程/去哪儿/头条多源核实"},{"name":"承天寺","address":"泉州市鲤城区南俊路84号","tag":"必去","reason":"比开元寺清静很多，藏在闹市，大榕树遮天蔽日。","intro":"藏在闹市里的清幽禅院，人少安静、绿树成荫。笔记原话「我最喜欢的一个寺庙，闹中取静，绿树成荫心情舒畅」。","highlights":["遮天蔽日的大榕树","放生池与闽南园林式寺院格局","闹市中的静谧氛围（比开元寺清静太多）"],"hours":"约 8:00–17:00（未获官方确认，出行前复核）","ticket":"免费（古城寺庙多为免费，以现场为准）","duration":"30–45 分钟","stip":"适合走累了来放空。旁边有巴浪鱼咖啡馆（承天寺店），两层老屋改造、冷萃口碑好，可歇脚。","ssrc":"语料 note_28 + 联网核实"},{"name":"关岳庙","address":"泉州市鲤城区涂门街186-196号","tag":"必去","reason":"香火旺、建筑漂亮、剪瓷雕夜景美，感受热烈的世俗信仰。","intro":"通淮关岳庙，供奉关羽与岳飞双圣，福建现存规模最大、香火最盛的武庙，闽南民间信仰中心，有「闽南雕刻艺术博物馆」之誉。","highlights":["屋顶剪瓷雕，极其华丽（记得抬头看）","大殿龙柱与门神彩绘","入夜灯光下的庙宇夜景"],"hours":"6:00–18:00","ticket":"免费","duration":"1 小时","stip":"语料原话「香火最旺，听说求事业财运最灵」。参拜有讲究：先门外拜天公 → 关羽的赤兔马 → 岳飞的雪青骐骥 → 最后武成殿主祭关圣。傍晚去连夜景一起看。","ssrc":"语料 note_28 + 携程/头条核实"},{"name":"西街","address":"泉州市鲤城区西街","tag":"顺路逛","reason":"泉州最有名的老街，但主街小吃重复；建议拐进旁边小巷子找吃的。","intro":"全长约 1700 米，东起钟楼、西至城西路，是泉州现存最古老的街道，保留大量闽南红砖古厝、骑楼与番仔楼，有「泉州古城活化石」之称。","highlights":["钟楼（十字路口地标，随手拍都出片）","莓超疯天台：双塔 + 落日，必拍","主街之外的小巷：象峰巷、金鱼巷、裴巷","一路吃过去：润饼菜、面线糊、醋肉、四果汤"],"hours":"全天开放，店铺多为 9:00–22:00","ticket":"免费","duration":"2–3 小时","stip":"⚠️ 语料原话「西街主街小吃重复且偏游客，拐进旁边小巷子找吃的更地道」。傍晚从天台往西拍双塔剪影效果最好；白天步行，傍晚可骑共享车。","ssrc":"语料 note_02/note_16 + 携程/去哪儿核实"},{"name":"中山路","address":"泉州市鲤城区中山路","tag":"顺路逛","reason":"闽南骑楼老街，适合边走边吃，夜间也很美。","intro":"闽南骑楼老街，南洋风情，老字号云集。语料原话「骑楼 + 老铺，适合扫街」，是边走边吃的一条线。","highlights":["连绵骑楼建筑群","金鱼巷（值得拐进去）","老字号店铺与夜间霓虹"],"hours":"全天开放，店铺多为 9:00–22:00","ticket":"免费","duration":"1–2 小时","stip":"从钟楼往南走接中山南路，夜里的骑楼比白天更有味道。语料里有人专门推荐「晚上去中山路美食街，面线糊 + 海蛎煎 + 润饼菜」。","ssrc":"语料 note_20/note_06 + 评论 + 联网核实"},{"name":"天后宫","address":"泉州市鲤城区南门天后路","tag":"顺路去","reason":"福建最大妈祖庙，闽南民俗文化浓厚，二三十分钟可逛完。","intro":"始建于南宋庆元二年（1196 年），中国现存规模最大、规格最高的妈祖庙，郑和下西洋前均在此祭拜，是闽南人航海贸易的精神地标。","highlights":["牌楼式山门、古戏台、拜庭","天后殿金身妈祖神像","石雕里的船锚、海浪纹等海洋元素","对面的德济门遗址（顺路）"],"hours":"约 7:00–18:00（各源 7:30–17:30 也有，以现场为准）","ticket":"免费","duration":"1 小时","stip":"出来就是秉正堂石花膏（天后路总店），逛完直接吃四果汤。农历三月廿三妈祖诞辰前后有庙会。","ssrc":"语料 note_28 + 携程/去哪儿核实"},{"name":"清净寺","address":"泉州市鲤城区涂门街108-110号","tag":"注意穿着","reason":"伊斯兰古寺、异域风情；勿穿短裤短裙拖鞋。","intro":"又称艾苏哈卜大清真寺，中国现存最古老的伊斯兰教寺，宋元时期阿拉伯商人的宗教圣地，海丝路上多元文化共存的见证，有「世界宗教建筑的一朵奇花」之誉。","highlights":["门楼：阿拉伯文浮雕与几何图案","奉天坛遗址","阿拉伯文碑刻","明善堂：闽南风格与伊斯兰元素混搭"],"hours":"约 9:00–17:15（各源 7:30–17:45 均有，以现场为准）","ticket":"3 元","duration":"1 小时","stip":"⚠️ 穿着硬要求：女性需及膝长裤/长裙，男性不可袒胸露背，短裤、短裙、拖鞋都不行。隔壁就是斯丹姜母鸭涂门街总店，可连着吃。","ssrc":"语料（穿着要求）+ 携程/去哪儿/头条核实"},{"name":"五店市传统街区","address":"泉州市晋江市梅岭街道五店市","tag":"备选","reason":"闽南红砖古厝建筑群，适合拍照打卡；距古城约 30 分钟车程。","intro":"位于晋江老城区青阳核心，占地 126 亩、特色建筑 132 栋，是一片有 1300 多年历史的红砖古厝建筑群。百亩闽南古厝与摩天玻璃幕墙隔街相望，随手一拍就是半部闽南建筑史。","highlights":["蔡氏家庙：千年宗祠，红墙黛瓦挂满状元匾额","庄氏家庙：与蔡氏齐名的闽南宗祠典范","柳青新宅：民国华侨豪宅改造的「最美星巴克」","雁塔：五店市标志性地标","涴然别墅：中西合璧的民国洋楼"],"hours":"全天开放（24 小时）","ticket":"街区免费；民俗馆、岁时节庆馆需另购票","duration":"3–4 小时（半日）","stip":"距古城约 30 分钟车程，适合「想拍照」那天专门去。公交晋江 11/17/18/22 路到「五店市站」步行 2 分钟。行程里它与「古城补漏」是二选一。","ssrc":"携程攻略 + 福建省文旅厅（fjta.com）核实；语料 0 提及"},{"name":"洛阳桥","address":"泉州市洛江区万安街道洛阳桥","tag":"备选","reason":"国内四大古桥之一，退潮可看桥墩牡蛎；距古城较远。","intro":"又名万安桥，北宋皇祐五年始建、历时六年建成，中国现存最古老的跨海梁式石桥，中国古代四大名桥之一，有「海内第一桥」之誉。泉州谚语：「站着像东西塔，躺着像洛阳桥」。","highlights":["桥上石雕","「种蛎固基」——古人用牡蛎加固桥基的生物工程智慧","红树林与白鹭，日落时分极美"],"hours":"全天开放","ticket":"免费","duration":"1 小时","stip":"清晨或傍晚光线最柔和；退潮时能更清楚地看到桥墩上的牡蛎。在洛江区，离古城较远，建议专门安排半天。","ssrc":"携程/头条核实 + 语料（行程备选）"},{"name":"洛伽寺","tag":"不推荐","reason":"远看壮观，实际可逛的不多，周边配套和交通一般。","intro":"石狮的海上寺庙，涨潮时整座庙像浮在海面上，看日落一绝——这也是它在小红书上最出圈的原因。","highlights":["海上寺庙的视觉奇观（涨潮时）","日落"],"hours":"全天（具体以现场为准）","ticket":"免费（以现场为准）","duration":"1–2 小时","stip":"⚠️ 本项目语料把它列进「不推荐」：远看壮观，实际可逛的不多，周边配套和交通一般。除非专门去看日落，否则不建议为它花半天。","ssrc":"语料（红黑榜 OCR 结论）+ 头条核实"},{"name":"不凡鲜花园艺","address":"泉州市鲤城区新华北路148号","tag":"体验","reason":"逛花市买束花带回去，顺路歇脚；离西街/开元寺不远，可插进行程空档。","intro":"新华北路上的一家鲜花园艺店，主打鲜花、绿植与花艺小物。泉州人日常买花的地方，想给行程加一点生活气，来这里挑一束当季花最合适。","highlights":["当季鲜切花与盆栽绿植","花束可按预算搭配，适合带回民宿拍照","离西湖公园、西街不远，顺路可达"],"hours":"以店铺当日营业时间为准（建议出行前电话确认）","ticket":"免费逛；买花另计","duration":"30–45 分钟","stip":"💡 早上花材最新鲜、品种最全；买完可以顺路去西湖公园或带回西街拍照。地址在新华北路，距培元中学、大寺后一带很近。","ssrc":"用户指定补充点 + 腾讯地图 POI（鲤城区新华北路，花鸟鱼虫类）"},{"name":"双囍簪花化妆摄影体验馆","address":"泉州市鲤城区泮宫内12号","tag":"体验","reason":"来泉州必做的事之一：簪花围 + 妆造 + 拍照，一整套下来两小时搞定。","intro":"位于府文庙旁的泮宫内，做蟳埔女簪花围妆造与旅拍。衣服款式多（新中式旗袍、马面裙、蟳埔女装、小娘惹装等），可簪花 + 化妆 + 摄影一条龙，也能只做妆造自己出去拍。","highlights":["簪花围妆造：可看图沟通想要的颜色和风格","服装选择多：旗袍 / 马面裙 / 蟳埔女装 / 小娘惹装","妆造后可穿出去玩一天，按约定时间归还","出片点：泮宫、文庙、金鱼巷、西街"],"hours":"08:00–21:00","ticket":"簪花 + 服装约 40 元起；化妆加约 39 元（人均约 82 元，摄影套餐另计）","duration":"1–2 小时","stip":"💡 建议先电话/线上预约，节假日和下午容易满档；想拍空景就约早场。做完妆造去文庙、金鱼巷、西街拍最好看，光线柔和的傍晚尤其出片。","ssrc":"用户指定补充点 + 腾讯地图 POI（评分 4.6 / 人均 82 / 电话 13625984273）+ 游笔记述核实"}];
 
 /* ═══ 地图选择器 ═══ */
 (function(){
